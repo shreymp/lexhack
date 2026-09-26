@@ -97,7 +97,7 @@ export default function LeaseInputCard({
             </p>
           )}
           <p className="helper-text">
-            We read the text out of your PDF in your browser session only; it isn't saved.
+            We read the text out of your PDF in your browser session only; it isn&apos;t saved.
           </p>
         </div>
       ) : (
@@ -118,7 +118,7 @@ export default function LeaseInputCard({
         </button>
         {sampleState === "error" && (
           <p className="helper-text" role="status">
-            The sample lease isn't available right now. You can still upload or paste your own.
+            The sample lease isn&apos;t available right now. You can still upload or paste your own.
           </p>
         )}
       </div>
