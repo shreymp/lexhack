@@ -1,0 +1,40 @@
+{
+  "lease": "holdout-lease.txt",
+  "monthly_rent": 2100,
+  "clauses": [
+    { "match": "Lessor's address for notice purposes is 1200 North LaSalle Drive", "expected": "standard", "rule_id": null, "note": "Section 1 -- Parties, routine notice addresses." },
+    { "match": "the residential dwelling unit located at 4417 South Drexel Boulevard", "expected": "standard", "rule_id": null, "note": "Section 2 -- Premises description." },
+    { "match": "shall commence on November 1, 2026, and shall terminate on October 31, 2027", "expected": "standard", "rule_id": null, "note": "Section 3 -- ordinary fixed term." },
+    { "match": "Two Thousand One Hundred Dollars ($2,100.00) per month", "expected": "standard", "rule_id": null, "note": "Section 4 -- Rent amount, stated once ($2,100)." },
+    { "match": "shall be held at Prairie Trust & Savings Bank, 900 West Adams Street", "expected": "standard", "rule_id": null, "note": "Section 5 -- Security deposit clause names the bank and address (chi-rlto-080a3-deposit-bank protection is present)." },
+    { "match": "a late charge of Fifteen Dollars ($15.00) per day for each day the Rent remains unpaid", "expected": "likely_unenforceable", "rule_id": "chi-rlto-140h-late-fee", "note": "RED: Section 6. $15/day for up to 30 days = $450 worst case, far over the $90 cap for $2,100 rent ($10 + 5% x $1,600)." },
+    { "match": "shall receive a rent discount of Twenty-Five Dollars ($25.00)", "expected": "standard", "rule_id": null, "note": "TRICKY-STANDARD: Section 7. Early-payment discount of $25/month is within the $90 cap (chi-rlto-140i-early-discount does not apply)." },
+    { "match": "used and occupied solely as a private residential dwelling", "expected": "standard", "rule_id": null, "note": "Section 8 -- ordinary use restriction." },
+    { "match": "Lessee shall be responsible for arranging and paying for all utilities", "expected": "standard", "rule_id": null, "note": "Section 9 -- ordinary utilities allocation." },
+    { "match": "shall promptly notify Lessor in writing of any condition requiring repair", "expected": "standard", "rule_id": null, "note": "Section 10 -- ordinary tenant upkeep duty." },
+    { "match": "shall make repairs necessary to keep the Premises fit for habitation", "expected": "standard", "rule_id": null, "note": "Section 11 -- ordinary landlord repair duty." },
+    { "match": "shall not make any structural alteration, addition, or improvement", "expected": "standard", "rule_id": null, "note": "Section 12 -- ordinary alterations clause." },
+    { "match": "shall not assign this Lease or sublet the Premises", "expected": "standard", "rule_id": null, "note": "Section 13 -- ordinary assignment/sublet consent clause." },
+    { "match": "any such amended rule shall become binding upon Lessee immediately upon posting", "expected": "one_sided", "rule_id": null, "note": "YELLOW: Section 14. Landlord may change house rules unilaterally at any time; one-sided but not tied to a specific RLTO rule." },
+    { "match": "No pet of any kind shall be kept on the Premises", "expected": "standard", "rule_id": null, "note": "Section 15 -- ordinary pet-consent clause." },
+    { "match": "One unassigned parking space in the rear lot", "expected": "standard", "rule_id": null, "note": "Section 16 -- ordinary parking clause, benefits tenant." },
+    { "match": "regardless of cause, including any injury or damage arising from Lessor's own negligence", "expected": "likely_unenforceable", "rule_id": "chi-rlto-140c-liability-limit", "note": "RED: Section 17. Exculpatory clause releasing Lessor from liability for its own negligence." },
+    { "match": "Lessor shall, at its option, either repair the damage within a reasonable time", "expected": "standard", "rule_id": null, "note": "Section 18 -- ordinary casualty clause." },
+    { "match": "Lessor may pursue any remedy available at law or equity", "expected": "standard", "rule_id": null, "note": "Section 19 -- ordinary default clause, cure period referenced." },
+    { "match": "confess judgment against Lessee for any sums claimed to be due hereunder", "expected": "likely_unenforceable", "rule_id": "chi-rlto-140b-confession", "note": "RED: Section 20. Classic confession-of-judgment / cognovit clause." },
+    { "match": "Lessee shall reimburse Lessor for all reasonable attorneys' fees and costs so incurred", "expected": "likely_unenforceable", "rule_id": "chi-rlto-140f-attorney-fees", "note": "RED: Section 21. One-directional attorney's-fee-shifting clause (tenant pays landlord's fees only)." },
+    { "match": "waive any right either may have to a trial by jury", "expected": "likely_unenforceable", "rule_id": "chi-rlto-140e-jury-waiver", "note": "RED: Section 22. Explicit jury-trial waiver." },
+    { "match": "prevailing Party shall be entitled to recover court costs from the non-prevailing Party as provided by law", "expected": "standard", "rule_id": null, "note": "TRICKY-STANDARD: Section 23. Mutual prevailing-party court-costs clause expressly limited to what the law provides." },
+    { "match": "no less than forty-eight (48) hours' advance notice", "expected": "standard", "rule_id": null, "note": "TRICKY-STANDARD: Section 24. 48 hours satisfies the RLTO's 2-day minimum entry notice; emergencies are carved out." },
+    { "match": "Within sixty (60) days after Lessee vacates the Premises", "expected": "likely_unenforceable", "rule_id": "chi-rlto-080d-deposit-return", "note": "RED: Section 25. Deposit return window of 60 days exceeds the RLTO's 45-day maximum." },
+    { "match": "engage a licensed professional carpet cleaning service to clean all carpeted floor areas", "expected": "one_sided", "rule_id": null, "note": "YELLOW: Section 26. Mandatory professional carpet cleaning regardless of condition; one-sided but not a specific RLTO rule." },
+    { "match": "solely responsible, at Lessee's own expense, for the cost of pest control services", "expected": "one_sided", "rule_id": null, "note": "YELLOW: Section 27. Tenant pays for all pest control regardless of cause; one-sided but not a specific RLTO rule." },
+    { "match": "deemed delivered when personally delivered or when deposited in the United States mail", "expected": "standard", "rule_id": null, "note": "Section 28 -- ordinary notices clause." },
+    { "match": "A copy of the City of Chicago Residential Landlord and Tenant Ordinance Summary is attached to this Lease.", "expected": "standard", "rule_id": null, "note": "Section 29 -- RLTO summary reference is present (chi-rlto-170-summary protection is present)." },
+    { "match": "supersedes all prior negotiations, representations, or agreements", "expected": "standard", "rule_id": null, "note": "Section 30 -- ordinary integration/entire-agreement clause." }
+  ],
+  "missing": [
+    { "rule_id": "chi-rlto-170-summary", "expected_status": "found" },
+    { "rule_id": "chi-rlto-080a3-deposit-bank", "expected_status": "found" }
+  ]
+}

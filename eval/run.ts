@@ -3,9 +3,12 @@
 // eval/labels.json, prints a report, and writes eval/results/<provider>-<model>.json.
 //
 // Usage:
-//   npm run eval                      # LLM_PROVIDER from env (mock by default -- see lib/llm/index.ts)
-//   npm run eval -- --runs 5          # repeat 5x, report mean/min/max (for LLM variance)
-//   npm run eval -- --rent-from-lease # pass monthlyRent: null (let the pipeline read rent off the lease text)
+//   npm run eval                                    # LLM_PROVIDER from env (mock by default -- see lib/llm/index.ts)
+//   npm run eval -- --runs 5                        # repeat 5x, report mean/min/max (for LLM variance)
+//   npm run eval -- --rent-from-lease               # pass monthlyRent: null (let the pipeline read rent off the lease text)
+//   npm run eval -- --labels eval/holdout-labels.json  # score a different lease/labels pair (default: eval/labels.json)
+//                                                    # the lease file is read from the "lease" field of the labels
+//                                                    # file, resolved relative to that labels file's directory.
 //
 // Exit code is always 0 -- this is a report, not a pass/fail gate.
 
@@ -21,6 +24,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 function parseArgs(argv: string[]) {
   let runs = 1;
   let rentFromLease = false;
+  let labelsPath = join(__dirname, "labels.json");
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === "--runs") {
       const n = Number(argv[i + 1]);
@@ -32,9 +36,17 @@ function parseArgs(argv: string[]) {
       i++;
     } else if (argv[i] === "--rent-from-lease") {
       rentFromLease = true;
+    } else if (argv[i] === "--labels") {
+      const p = argv[i + 1];
+      if (!p) {
+        console.error("--labels requires a path argument");
+        process.exit(0);
+      }
+      labelsPath = join(process.cwd(), p);
+      i++;
     }
   }
-  return { runs, rentFromLease };
+  return { runs, rentFromLease, labelsPath };
 }
 
 function mean(nums: number[]): number {
@@ -71,10 +83,12 @@ function sanitize(s: string): string {
 }
 
 async function main() {
-  const { runs, rentFromLease } = parseArgs(process.argv.slice(2));
+  const { runs, rentFromLease, labelsPath } = parseArgs(process.argv.slice(2));
 
-  const leaseText = readFileSync(join(__dirname, "trap-lease.txt"), "utf8");
-  const labels: Labels = JSON.parse(readFileSync(join(__dirname, "labels.json"), "utf8"));
+  const labels: Labels = JSON.parse(readFileSync(labelsPath, "utf8"));
+  // The lease path in the labels file is resolved relative to the labels file's own directory,
+  // so `--labels eval/holdout-labels.json` picks up eval/holdout-lease.txt without extra flags.
+  const leaseText = readFileSync(join(dirname(labelsPath), labels.lease), "utf8");
 
   const coverage = { in_chicago: "yes" as const, owner_occupied_six_or_fewer: "no" as const, other_exclusion: "no" as const };
   const monthlyRent = rentFromLease ? null : labels.monthly_rent;
@@ -105,7 +119,7 @@ async function main() {
   if (provider.is_mock) {
     console.log("MOCK PROVIDER -- these numbers measure the keyword heuristics, NOT the AI model.");
   }
-  console.log(`Lease: eval/${labels.lease}   Monthly rent used: ${monthlyRent ?? "(read from lease text by pipeline)"}`);
+  console.log(`Lease: ${labels.lease}   Labels: ${labelsPath}   Monthly rent used: ${monthlyRent ?? "(read from lease text by pipeline)"}`);
   console.log(`Runs: ${runs}`);
   console.log("==================================================================\n");
 
@@ -122,7 +136,8 @@ async function main() {
   // Write results file.
   const resultsDir = join(__dirname, "results");
   mkdirSync(resultsDir, { recursive: true });
-  const fileName = `${sanitize(provider.name)}-${sanitize(provider.model)}.json`;
+  const leaseStem = sanitize(labels.lease.replace(/\.[^./]+$/, ""));
+  const fileName = `${sanitize(provider.name)}-${sanitize(provider.model)}-${leaseStem}.json`;
   const outPath = join(resultsDir, fileName);
   writeFileSync(
     outPath,

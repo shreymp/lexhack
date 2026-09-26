@@ -5,6 +5,17 @@ import type { Clause, ClauseFinding, RiskLabel } from "@/lib/types";
 import { labelInfo } from "@/components/labels";
 import DetailPanel from "@/components/DetailPanel";
 
+/** Short title for a clause card: its first line (e.g. "3. Late Fees" or "6. LATE CHARGES."), capped in length. */
+function clauseTitle(clause: Clause): string {
+  const firstLine = clause.text.split("\n")[0].trim();
+  // Numbered clauses often run the title into the body ("6. LATE CHARGES. If rent...");
+  // keep the heading plus an ALL-CAPS title when present.
+  const m = /^(\S+\s+[A-Z][A-Z0-9 ,'&/-]{2,60}\.)/.exec(firstLine);
+  const title = m ? m[1] : firstLine;
+  if (title.length <= 60) return title;
+  return clause.heading ?? `Clause ${clause.index + 1}`;
+}
+
 const ORDER: RiskLabel[] = ["likely_unenforceable", "one_sided", "standard"];
 
 interface FindingsSidebarProps {
@@ -61,7 +72,7 @@ export default function FindingsSidebar({ clauses, findings, selectedClauseId, o
   function renderItem(finding: ClauseFinding) {
     const clause = clauseById.get(finding.clause_id) ?? null;
     const info = labelInfo(finding.label);
-    const heading = clause?.heading ?? (clause ? `Clause ${clause.index + 1}` : finding.clause_id);
+    const heading = clause ? clauseTitle(clause) : finding.clause_id;
     const isOpen = selectedClauseId === finding.clause_id;
     return (
       <li key={finding.clause_id} data-finding-id={finding.clause_id}>
