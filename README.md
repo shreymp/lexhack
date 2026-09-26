@@ -106,7 +106,7 @@ There is also a **held-out lease** written by a separate agent that never saw th
 **Results so far:**
 
 - **Real LLM: not yet measured.** The build environment had no network access to an LLM provider. Run `npm run eval` with a provider configured and record the numbers here. Only measured numbers should be reported.
-- **Mock provider:** its keyword patterns were tuned while looking at the trap lease, so its perfect score there says nothing about real accuracy. It exists so the pipeline, verifier and UI can be tested offline.
+- **Mock provider:** its keyword patterns were tuned while looking at the trap lease, so its perfect score there says nothing about real accuracy. On the held-out lease it caught 4 of 6 planted red flags and 0 of 3 one-sided clauses, with no false alarms on the 21 standard clauses. It exists so the pipeline, verifier and UI can be tested offline.
 
 ## Privacy
 
