@@ -5,7 +5,7 @@ import { buildSummarizeSystemPrompt, buildSummarizeUserPrompt, SUMMARIZE_JSON_SC
 import type { LlmProvider } from "@/lib/llm/types";
 import type { Clause, ClauseFinding, MissingProtection } from "@/lib/types";
 
-const MAX_TOKENS = 1024;
+const MAX_TOKENS = 4096; // includes any reasoning tokens
 
 interface SummarizeCtx {
   provider: LlmProvider;

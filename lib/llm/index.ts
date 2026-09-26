@@ -30,7 +30,11 @@ function buildOpenAiCompatible(): LlmProvider {
   if (!apiKey) {
     throw new Error("OPENAI_COMPAT_API_KEY must be set when LLM_PROVIDER=openai-compatible.");
   }
-  return new OpenAiCompatibleProvider(model, apiKey, process.env.OPENAI_COMPAT_BASE_URL);
+  return new OpenAiCompatibleProvider(model, apiKey, process.env.OPENAI_COMPAT_BASE_URL, {
+    // Optional OpenRouter-style reasoning effort (e.g. "low"). Reasoning tokens count
+    // against max_tokens, so high-effort defaults can starve the JSON answer.
+    reasoningEffort: process.env.LLM_REASONING_EFFORT || undefined,
+  });
 }
 
 /**

@@ -7,8 +7,10 @@ import { ANALYZE_JSON_SCHEMA, buildAnalyzeSystemPrompt, buildAnalyzeUserPrompt }
 import { LlmUnavailableError, type LlmProvider } from "@/lib/llm/types";
 import type { Clause } from "@/lib/types";
 
-const MAX_CONCURRENT_BATCHES = 3;
-const MAX_TOKENS_PER_BATCH = 4096;
+// Parallel LLM calls per analysis. Lower it (LLM_CONCURRENCY=1) for rate-limited free-tier models.
+const MAX_CONCURRENT_BATCHES = Math.max(1, Number(process.env.LLM_CONCURRENCY) || 3);
+// Room for ~12 findings of JSON plus any reasoning tokens (which count against this limit).
+const MAX_TOKENS_PER_BATCH = 12_000;
 
 function chunk<T>(items: T[], size: number): T[][] {
   const out: T[][] = [];
