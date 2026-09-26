@@ -30,15 +30,28 @@ be reported as results** -- don't paraphrase them into a different claim (e.g.
   a report, and writes `eval/results/<provider>-<model>.json`.
 - `make-pdf.ts` -- generates `trap-lease.pdf` from `trap-lease.txt` using
   `pdf-lib`.
+- `holdout-lease.txt` / `holdout-labels.json` -- a second, held-out lease +
+  labels pair. See "Held-out lease" below.
 
 ## Running
 
 ```bash
-npm run eval                       # uses LLM_PROVIDER from your env/.env.local (mock by default)
-npm run eval -- --runs 5           # repeat 5x and report mean/min/max (LLM variance)
-npm run eval -- --rent-from-lease  # pass monthlyRent: null, forcing the pipeline to read rent off the lease text
-npm run make:trap-pdf               # regenerate eval/trap-lease.pdf after editing trap-lease.txt
+npm run eval                                       # uses LLM_PROVIDER from your env/.env.local (mock by default)
+npm run eval -- --runs 5                           # repeat 5x and report mean/min/max (LLM variance)
+npm run eval -- --rent-from-lease                  # pass monthlyRent: null, forcing the pipeline to read rent off the lease text
+npm run eval -- --labels eval/holdout-labels.json  # score the held-out lease instead of the trap lease
+npm run make:trap-pdf                               # regenerate eval/trap-lease.pdf after editing trap-lease.txt
 ```
+
+`--labels <path>` picks which labels file (and therefore which lease) to
+score: it defaults to `eval/labels.json`, and the lease file it loads is
+whatever that labels file's `"lease"` field names, resolved relative to the
+labels file's own directory -- so `eval/holdout-labels.json`'s `"lease":
+"holdout-lease.txt"` resolves to `eval/holdout-lease.txt` with no extra flag
+needed. The results file written to `eval/results/` now includes the lease
+name, e.g. `mock-keyword-heuristics-v1-holdout-lease.json` (versus
+`mock-keyword-heuristics-v1-trap-lease.json` for the default run), so runs
+against different leases don't overwrite each other.
 
 The eval always exits 0 -- it's a report, not a CI gate. If the provider is
 mock, the report prints **"MOCK PROVIDER -- these numbers measure the keyword
@@ -110,6 +123,56 @@ run N times against the same lease and reports mean/min/max for every numeric
 metric (including the verifier stats), so a single unlucky run doesn't get
 over-interpreted. With the mock provider all runs are identical, since the
 mock is a deterministic keyword heuristic.
+
+## Held-out lease
+
+`trap-lease.txt` was built alongside the detection logic, so a good score on
+it partly measures whether the prompts and mock heuristics were tuned to its
+exact wording. `holdout-lease.txt` + `holdout-labels.json` exist to check
+that separately: the holdout lease was written by reading only this
+directory's schema files (`rules/chicago-rlto.json`, `lib/types.ts`,
+`eval/score.ts`, `eval/run.ts`, this README) -- **without** opening
+`lib/llm/mock.ts` or anything under `lib/prompts/`, and without looking at
+`trap-lease.txt` or `labels.json`. The goal was a lease that plants the same
+kinds of problems using different structure and wording than the trap lease,
+so a pipeline that only pattern-matches the trap lease's phrasing will show
+it on this fixture instead of on the one it was tuned against.
+
+Differences from the trap lease, by design:
+
+- Numbered "Section N -- Title" headings instead of the trap lease's plain
+  numbered-clause style, "Lessor/Lessee" instead of "Landlord/Tenant", and
+  more passive, legalese phrasing throughout.
+- 30 sections, one labeled clause each: 6 RED clauses (each a different
+  `rule_id` from `rules/chicago-rlto.json`, including the late-fee rule
+  stated as a per-day charge -- $15/day for up to 30 days on $2,100 rent is a
+  $450 worst case against a $90 cap, so it is over the cap however the
+  worst-case fee is computed), 3 YELLOW one-sided-but-no-rule clauses
+  (landlord may amend house rules unilaterally at any time, mandatory
+  professional carpet cleaning at move-out regardless of condition, tenant
+  pays for all pest control regardless of cause), 3 TRICKY-STANDARD clauses
+  that read as risky but are fine under the rule text (a 48-hour entry-notice
+  clause, which satisfies the RLTO's 2-day minimum; a mutual court-costs
+  clause expressly limited to "as provided by law"; and a $25/month
+  early-payment discount, which is within the same cap formula as the late
+  fee), and 18 ordinary standard clauses.
+- The RLTO summary reference and a named deposit bank + street address are
+  both present (Sections 29 and 5), so both missing-protection checks
+  (`chi-rlto-170-summary`, `chi-rlto-080a3-deposit-bank`) should come back
+  `"found"` -- the opposite of the trap lease, which omits both.
+
+Run it with:
+
+```bash
+npm run eval -- --labels eval/holdout-labels.json
+```
+
+A weak mock-provider score on the holdout lease is expected and is the point
+-- the mock is a keyword heuristic built around the trap lease's wording, not
+a general Chicago-lease detector. `tests/unit/eval-holdout.test.ts` checks
+the fixture itself (every `match` is a unique substring of the holdout lease,
+and every expected red `rule_id` exists in the rule pack) rather than
+grading the pipeline's output, since a weak score here is not a bug.
 
 ## Note on `tsx` and the `@/` alias
 
