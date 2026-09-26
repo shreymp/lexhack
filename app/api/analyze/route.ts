@@ -22,7 +22,20 @@ function errorResponse(error: string, code: ApiError["code"], status: number): N
   return NextResponse.json({ error, code }, { status });
 }
 
+// Upper bound for the whole multipart body: the PDF limit plus room for the text
+// fields. Checked before parsing so an oversized upload is never buffered.
+const MAX_BODY_BYTES = MAX_PDF_BYTES + 1024 * 1024;
+
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  const declaredLength = Number(req.headers.get("content-length") ?? "0");
+  if (declaredLength > MAX_BODY_BYTES) {
+    return errorResponse(
+      `That upload is too large (max ${Math.round(MAX_PDF_BYTES / (1024 * 1024))} MB).`,
+      "bad_request",
+      413,
+    );
+  }
+
   let formData: FormData;
   try {
     formData = await req.formData();
