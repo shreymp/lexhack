@@ -92,7 +92,7 @@ function depositMatcher(text: string): ProhibitedMatch | null {
 
 function unequalTerminationMatcher(text: string): ProhibitedMatch | null {
   // "\)?" after the digit group handles a stated period written as "thirty (30) days".
-  const landlordMatch = /landlord\s+may\s+(?:terminate|cancel)[^.]{0,100}?(\d+)\)?\s*days?/i.exec(text);
+  const landlordMatch = /landlord\s+may\s+(?:terminate|cancel)(?:[^.]|\.(?=\d)){0,100}?(\d+)\)?\s*days?/i.exec(text);
   if (!landlordMatch) return null;
 
   // The clearest signal of asymmetry: the tenant is flatly denied an early-termination
@@ -114,7 +114,7 @@ function unequalTerminationMatcher(text: string): ProhibitedMatch | null {
   }
 
   // Otherwise, only flag it if the tenant's own stated notice period is longer.
-  const tenantMatch = /tenant\s+(?:must|shall|may\s+only)[^.]{0,100}?(\d+)\)?\s*days?/i.exec(text);
+  const tenantMatch = /tenant\s+(?:must|shall|may\s+only)(?:[^.]|\.(?=\d)){0,100}?(\d+)\)?\s*days?/i.exec(text);
   const landlordDays = Number(landlordMatch[1]);
   const tenantDays = tenantMatch ? Number(tenantMatch[1]) : null;
   if (tenantDays === null || landlordDays >= tenantDays) return null;
@@ -133,7 +133,7 @@ function unequalTerminationMatcher(text: string): ProhibitedMatch | null {
 
 function generalOrdinanceWaiverMatcher(text: string): ProhibitedMatch | null {
   const m =
-    /waives?[^.]{0,150}(?:rights?|remedies|protections)[^.]{0,120}ordinance|waives?[^.]{0,150}ordinance[^.]{0,120}(?:rights?|remedies|protections)/i.exec(
+    /waives?(?:[^.]|\.(?=\d)){0,150}(?:rights?|remedies|protections)(?:[^.]|\.(?=\d)){0,120}ordinance|waives?(?:[^.]|\.(?=\d)){0,150}ordinance(?:[^.]|\.(?=\d)){0,120}(?:rights?|remedies|protections)/i.exec(
       text,
     );
   if (!m) return null;
@@ -193,14 +193,14 @@ const PROHIBITED_MATCHERS: Matcher[] = [
   ),
   regexMatcher(
     "chi-rlto-140e-jury-waiver",
-    /waives?[^.]{0,60}(?:jury\s+trial|trial\s+by\s+jury)|(?:jury\s+trial|trial\s+by\s+jury)[^.]{0,40}(?:is\s+)?(?:hereby\s+)?waived/i,
+    /waives?(?:[^.]|\.(?=\d)){0,60}(?:jury\s+trial|trial\s+by\s+jury)|(?:jury\s+trial|trial\s+by\s+jury)(?:[^.]|\.(?=\d)){0,40}(?:is\s+)?(?:hereby\s+)?waived/i,
     "This clause has you give up your right to a jury trial.",
     "Chicago's RLTO does not allow a residential lease to make either party waive the right to a jury trial.",
     "Could we take out the jury-trial waiver in this lease? Chicago's RLTO doesn't allow that clause.",
   ),
   regexMatcher(
     "chi-rlto-140f-attorney-fees",
-    /tenant[^.]{0,40}(?:pay|reimburse)[^.]{0,40}attorney'?s?\s+fees|attorney'?s?\s+fees[^.]{0,40}tenant[^.]{0,20}(?:pay|responsible)/i,
+    /tenant(?:[^.]|\.(?=\d)){0,40}(?:pay|reimburse)(?:[^.]|\.(?=\d)){0,40}attorney'?s?\s+fees|attorney'?s?\s+fees(?:[^.]|\.(?=\d)){0,40}tenant(?:[^.]|\.(?=\d)){0,20}(?:pay|responsible)/i,
     "This clause makes you pay the landlord's attorney's fees if there's a lawsuit.",
     "Chicago's RLTO generally does not allow a lease to make the tenant pay the landlord's attorney's fees.",
     "Could we remove the clause requiring me to pay your attorney's fees in a lawsuit? I understand Chicago's RLTO limits that.",
@@ -222,7 +222,7 @@ const PROHIBITED_MATCHERS: Matcher[] = [
   depositMatcher,
   regexMatcher(
     "chi-rlto-140d-notice-waiver",
-    /waives?[^.]{0,100}(?:notice\s+to\s+quit|demand\s+for\s+rent|written\s+(?:termination\s+of\s+tenancy\s+)?notice|notice\s+of\s+termination|notice\s+(?:or\s+demand\s+)?(?:before|prior\s+to)\s+(?:an?\s+)?(?:eviction|possession))|without\s+(?:any\s+)?(?:prior\s+)?notice\s+to\s+quit/i,
+    /waives?(?:[^.]|\.(?=\d)){0,100}(?:notice\s+to\s+quit|demand\s+for\s+rent|written\s+(?:termination\s+of\s+tenancy\s+)?notice|notice\s+of\s+termination|notice\s+(?:or\s+demand\s+)?(?:before|prior\s+to)\s+(?:an?\s+)?(?:eviction|possession))|without\s+(?:any\s+)?(?:prior\s+)?notice\s+to\s+quit/i,
     "This clause has you give up a required notice or demand before the landlord can start an eviction.",
     "Chicago's RLTO does not allow a lease to make the tenant waive a required written termination notice or demand.",
     "Could we remove this notice waiver? I understand Chicago's RLTO requires certain written notices before termination or eviction.",
@@ -274,10 +274,16 @@ const ONE_SIDED_MATCHERS: ((text: string) => OneSidedMatch | null)[] = [
     "Could we clarify which repairs are my responsibility versus the landlord's, especially for normal wear and major systems?",
   ),
   oneSidedMatcher(
-    /guests?\s+(?:may\s+not|shall\s+not|must\s+not)\s+(?:stay|remain)|guests?\s+(?:are\s+)?limited\s+to/i,
+    /guests?\s+(?:may\s+not|shall\s+not|must\s+not)\s+(?:stay|remain)|guests?\s+(?:are\s+)?limited\s+to|guest(?:[^.]|\.(?=\d)){0,100}\(?\d+\)?\s*(?:nights?|days?)/i,
     "This clause limits how long guests can stay.",
     "Guest-limit clauses are common, but a strict or unclear limit is worth understanding upfront.",
-    "Could you clarify the guest policy - how many days a guest can stay before I need approval?",
+    "Could you clarify the guest policy - how many nights a guest can stay before I need approval?",
+  ),
+  oneSidedMatcher(
+    /repair(?:[^.]|\.(?=\d)){0,120}regardless\s+of\s+(?:the\s+)?(?:cause|fault)/i,
+    "This clause makes you pay for certain repairs no matter what caused the damage.",
+    "Putting repair costs on the tenant \"regardless of cause\" - even damage that isn't the tenant's fault - is unusually broad.",
+    "Could we limit this repair clause to damage I actually cause, rather than any cause?",
   ),
   oneSidedMatcher(
     /rent\s+may\s+(?:be\s+)?increase[d]?\s+at\s+(?:the\s+)?landlord'?s?\s+(?:sole\s+)?discretion|landlord\s+may\s+increase\s+(?:the\s+)?rent\s+at\s+any\s+time/i,
@@ -317,6 +323,23 @@ function extractLateFee(text: string): LateFeeExtraction {
     max_days: maxDaysMatch ? Number(maxDaysMatch[1]) : null,
     monthly_rent_in_clause: rentMatch ? Number(rentMatch[1]) : null,
   };
+}
+
+// Matches a clause's leading heading token ("12.", "12(a)", "Section 12",
+// "ARTICLE IV") plus an optional immediately-following ALL-CAPS title
+// ("LATE CHARGES.") on the same line, e.g. "6. LATE CHARGES. " in
+// "6. LATE CHARGES. If Landlord does not receive...". Segmentation (see
+// lib/segment.ts) keeps the heading as the start of clause.text, so without
+// this, a "first sentence" quote for a heading-only clause would just be the
+// heading number itself (too short, and not a real sentence) - see the
+// quotes_rejected regression this fixes.
+const HEADING_PREFIX_RE =
+  /^\s*(?:\d+(?:\.\d+)*\.|\d+\([a-zA-Z]\)|\([a-zA-Z0-9]+\)|Section\s+\d+[A-Za-z]?\.?|ARTICLE\s+(?:[IVXLCDM]+|\d+))\s+(?:[A-Z][A-Z0-9 &'\-/]{1,70}\.\s+)?/;
+
+/** Offset of the first character of the clause's real body text, past any heading/title. */
+function skipHeading(text: string): number {
+  const m = HEADING_PREFIX_RE.exec(text);
+  return m ? m[0].length : 0;
 }
 
 /** Expands a match to the sentence containing it, trimmed to <= 300 chars, and
@@ -383,9 +406,10 @@ function analyzeClauseMock(clause: Clause, rulePackApplies: boolean): RawClauseF
     };
   }
 
+  const bodyStart = skipHeading(text);
   return {
     clause_id: clause.id,
-    quote: extractQuote(text, 0, 0),
+    quote: extractQuote(text, bodyStart, bodyStart),
     plain_english: "This clause looks like a standard lease term based on a simple keyword check.",
     label: "standard",
     rule_id: null,

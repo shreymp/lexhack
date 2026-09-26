@@ -95,6 +95,25 @@ function ResultsInner() {
         </div>
 
         <div className="container results-layout">
+          {/* Findings column comes first in source order so mobile shows it before
+              the document; a desktop media query re-orders the two columns visually. */}
+          <div className="findings-column">
+            <SummaryCard summary={result.summary} findings={result.findings} />
+            {selectedIsUnanalyzed && (
+              <p className="helper-text" role="status" style={{ marginTop: -4 }}>
+                This part of the lease wasn&apos;t analyzed as its own clause.
+              </p>
+            )}
+            <FindingsSidebar
+              clauses={result.clauses}
+              findings={result.findings}
+              selectedClauseId={selectedClauseId}
+              onToggle={toggleFromCard}
+            />
+            <MissingProtections missing={result.missing} />
+            <QuestionsToAsk questions={result.questions_to_ask} />
+          </div>
+
           <div className="doc-column">
             <button
               type="button"
@@ -114,23 +133,6 @@ function ResultsInner() {
                 onSelectClause={selectFromDocument}
               />
             </div>
-          </div>
-
-          <div className="findings-column">
-            <SummaryCard summary={result.summary} findings={result.findings} />
-            {selectedIsUnanalyzed && (
-              <p className="helper-text" role="status" style={{ marginTop: -4 }}>
-                This part of the lease wasn&apos;t analyzed as its own clause.
-              </p>
-            )}
-            <FindingsSidebar
-              clauses={result.clauses}
-              findings={result.findings}
-              selectedClauseId={selectedClauseId}
-              onToggle={toggleFromCard}
-            />
-            <MissingProtections missing={result.missing} />
-            <QuestionsToAsk questions={result.questions_to_ask} />
           </div>
         </div>
       </main>

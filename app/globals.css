@@ -763,32 +763,41 @@ section + section {
   margin-top: 10px;
 }
 
+/* Mobile-first: findings column first (source order), document second and
+   collapsible. At >=960px, switch to a two-column layout with the document
+   on the left (sticky, independently scrollable) and findings on the right. */
 .results-layout {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
+  grid-template-columns: 1fr;
   gap: 24px;
   align-items: start;
 }
 
-@media (max-width: 900px) {
-  .results-layout {
-    grid-template-columns: 1fr;
-  }
-  .results-layout > .results-sidebar {
-    order: -1;
-  }
-}
-
-.results-sidebar {
+.findings-column {
   display: grid;
   gap: 20px;
-  position: sticky;
-  top: 16px;
+  min-width: 0;
 }
 
-@media (max-width: 900px) {
-  .results-sidebar {
-    position: static;
+.doc-column {
+  min-width: 0;
+}
+
+@media (min-width: 960px) {
+  .results-layout {
+    grid-template-columns: 1.4fr 1fr;
+  }
+  .doc-column {
+    order: 1;
+    position: sticky;
+    top: 16px;
+  }
+  .findings-column {
+    order: 2;
+  }
+  .doc-column .document-card {
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
   }
 }
 
@@ -817,9 +826,24 @@ section + section {
   border-color: var(--border-strong);
 }
 
-.finding-item[aria-pressed="true"] {
+.finding-item[aria-expanded="true"] {
+  border-radius: var(--radius) var(--radius) 0 0;
   border-color: var(--brand);
   box-shadow: 0 0 0 2px var(--brand) inset;
+}
+
+.finding-item__detail {
+  border: 2px solid var(--brand);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 4px 14px 14px;
+  background: var(--surface-raised);
+}
+
+.finding-item__detail .detail-panel {
+  border: none;
+  background: transparent;
+  padding: 0;
 }
 
 .finding-item__heading {
@@ -928,7 +952,7 @@ section + section {
   display: none;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 959px) {
   .doc-toggle {
     display: inline-flex;
     margin-bottom: 12px;
