@@ -97,7 +97,8 @@ export default function LeaseInputCard({
             </p>
           )}
           <p className="helper-text">
-            We read the text out of your PDF in your browser session only; it isn&apos;t saved.
+            Your PDF is sent to our server to read its text, then analyzed by an AI service. We
+            don&apos;t save it.
           </p>
         </div>
       ) : (

@@ -66,12 +66,19 @@ All counts are per labeled clause unless noted.
   no rule) clauses; caught means the pipeline flagged it as either
   `one_sided` or `likely_unenforceable` (over-flagging a yellow as red is not
   penalized here -- it's a stricter read, not a miss).
-- **standard_total / false_alarms_red / false_alarms_yellow** -- clauses
-  labeled `standard` (including the tricky-standard ones: the within-cap early
-  payment discount and the properly-noticed emergency-entry clause). A false
-  alarm means the pipeline flagged a genuinely standard clause as red or
-  yellow. This is the harness's main defense against a model or heuristic that
-  over-flags to look thorough.
+- **standard_total / standard_correct / standard_unanalyzed / false_alarms_red /
+  false_alarms_yellow** -- clauses labeled `standard` (including the
+  tricky-standard ones: the within-cap early payment discount and the
+  properly-noticed emergency-entry clause). `standard_correct` requires an
+  actual finding whose label is `standard` -- a clause the pipeline never
+  produced a finding for is **not** counted as correct. Those go into
+  `standard_unanalyzed` instead: a clause with no finding at all is neither a
+  correct catch nor a false alarm, since there's nothing to judge. A false
+  alarm (`false_alarms_red` / `false_alarms_yellow`) means the pipeline
+  flagged a genuinely standard clause as red or yellow. These four numbers
+  always sum to `standard_total`. This is the harness's main defense against
+  a model or heuristic that over-flags to look thorough, or that quietly
+  skips clauses to avoid false alarms.
 - **missing_expected / missing_correct / missing_rows** -- the two protections
   the trap lease deliberately omits (`chi-rlto-170-summary`,
   `chi-rlto-080a3-deposit-bank`). Both should come back `status: "not_found"`
@@ -90,8 +97,11 @@ All counts are per labeled clause unless noted.
   not that the model did anything wrong.
 
 Each clause also gets a row in the printed per-clause table (excerpt,
-expected, got, whether the rule_id matched, and a category label) so you can
-find a specific miss instead of only seeing aggregate counts.
+expected, got, `rule_ok`, and a category label) so you can find a specific
+miss instead of only seeing aggregate counts. `rule_ok` is `yes`/`no` when the
+clause has a finding, and `n/a` when it has none at all -- a clause with no
+finding can't be judged right or wrong, so it's never silently counted as
+"ok".
 
 ## `--runs N` and LLM variance
 

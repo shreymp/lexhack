@@ -71,7 +71,7 @@ function regexMatcher(
 function depositMatcher(text: string): ProhibitedMatch | null {
   const m = /security\s+deposit/i.exec(text);
   if (!m) return null;
-  const dayMatch = text.match(/(\d{2,3})\s*days?/);
+  const dayMatch = text.match(/(\d{2,3})\)?\s*days?/);
   const suspicious =
     /non-?refundable/i.test(text) ||
     /wear\s+and\s+tear/i.test(text) ||
@@ -91,12 +91,33 @@ function depositMatcher(text: string): ProhibitedMatch | null {
 }
 
 function unequalTerminationMatcher(text: string): ProhibitedMatch | null {
-  const landlordMatch = /landlord\s+may\s+(?:terminate|cancel)[^.]{0,80}?(\d+)\s*days?/i.exec(text);
+  // "\)?" after the digit group handles a stated period written as "thirty (30) days".
+  const landlordMatch = /landlord\s+may\s+(?:terminate|cancel)[^.]{0,100}?(\d+)\)?\s*days?/i.exec(text);
   if (!landlordMatch) return null;
-  const tenantMatch = /tenant[^.]{0,80}?(\d+)\s*days?/i.exec(text);
+
+  // The clearest signal of asymmetry: the tenant is flatly denied an early-termination
+  // right at all (no day-count comparison needed).
+  const tenantCannotTerminate =
+    /tenant\s+(?:shall\s+not|may\s+not|cannot|is\s+not\s+permitted\s+to)\s+terminate/i.test(text);
+  if (tenantCannotTerminate) {
+    return {
+      ruleId: "chi-rlto-140g-unequal-termination",
+      matchStart: landlordMatch.index,
+      matchEnd: landlordMatch.index + landlordMatch[0].length,
+      plainEnglish: "This clause lets the landlord end the lease early, but says the tenant may not.",
+      reasoning:
+        "Chicago's RLTO does not allow one side to have a shorter notice or termination right than the other, unless it's disclosed in a separate written notice (which we cannot see here).",
+      suggestedMessage:
+        "Could we make the termination rights the same for both of us, or share the separate written disclosure the RLTO requires for this kind of clause?",
+      needsLateFee: false,
+    };
+  }
+
+  // Otherwise, only flag it if the tenant's own stated notice period is longer.
+  const tenantMatch = /tenant\s+(?:must|shall|may\s+only)[^.]{0,100}?(\d+)\)?\s*days?/i.exec(text);
   const landlordDays = Number(landlordMatch[1]);
   const tenantDays = tenantMatch ? Number(tenantMatch[1]) : null;
-  if (tenantDays !== null && landlordDays >= tenantDays) return null;
+  if (tenantDays === null || landlordDays >= tenantDays) return null;
   return {
     ruleId: "chi-rlto-140g-unequal-termination",
     matchStart: landlordMatch.index,
@@ -106,6 +127,25 @@ function unequalTerminationMatcher(text: string): ProhibitedMatch | null {
       "Chicago's RLTO does not allow one side to have a shorter notice or termination period than the other, unless it's disclosed in a separate written notice (which we cannot see here).",
     suggestedMessage:
       "Could we make the termination notice period the same for both of us, or share the separate written disclosure the RLTO requires for this kind of clause?",
+    needsLateFee: false,
+  };
+}
+
+function generalOrdinanceWaiverMatcher(text: string): ProhibitedMatch | null {
+  const m =
+    /waives?[^.]{0,150}(?:rights?|remedies|protections)[^.]{0,120}ordinance|waives?[^.]{0,150}ordinance[^.]{0,120}(?:rights?|remedies|protections)/i.exec(
+      text,
+    );
+  if (!m) return null;
+  return {
+    ruleId: "chi-rlto-140a-waiver",
+    matchStart: m.index,
+    matchEnd: m.index + m[0].length,
+    plainEnglish: "This clause has you give up rights or protections under a landlord-tenant ordinance.",
+    reasoning:
+      "Chicago's RLTO does not allow a lease to make the tenant waive rights, remedies, or protections the ordinance gives them.",
+    suggestedMessage:
+      "Could we remove this waiver of ordinance rights? I understand Chicago's RLTO doesn't allow giving up those protections.",
     needsLateFee: false,
   };
 }
@@ -153,7 +193,7 @@ const PROHIBITED_MATCHERS: Matcher[] = [
   ),
   regexMatcher(
     "chi-rlto-140e-jury-waiver",
-    /waives?\s+(?:the\s+)?right\s+(?:to|of)\s+(?:a\s+)?(?:trial\s+by\s+)?jury(?:\s+trial)?|jury\s+trial\s+is\s+(?:hereby\s+)?waived/i,
+    /waives?[^.]{0,60}(?:jury\s+trial|trial\s+by\s+jury)|(?:jury\s+trial|trial\s+by\s+jury)[^.]{0,40}(?:is\s+)?(?:hereby\s+)?waived/i,
     "This clause has you give up your right to a jury trial.",
     "Chicago's RLTO does not allow a residential lease to make either party waive the right to a jury trial.",
     "Could we take out the jury-trial waiver in this lease? Chicago's RLTO doesn't allow that clause.",
@@ -182,12 +222,13 @@ const PROHIBITED_MATCHERS: Matcher[] = [
   depositMatcher,
   regexMatcher(
     "chi-rlto-140d-notice-waiver",
-    /waives?\s+(?:any\s+)?(?:written\s+)?(?:termination\s+of\s+tenancy\s+)?notice|without\s+(?:any\s+)?notice\s+to\s+quit/i,
-    "This clause has you give up a required termination notice.",
-    "Chicago's RLTO does not allow a lease to make the tenant waive a required written termination notice.",
-    "Could we remove the notice waiver? I understand Chicago's RLTO requires certain written notices before termination.",
+    /waives?[^.]{0,100}(?:notice\s+to\s+quit|demand\s+for\s+rent|written\s+(?:termination\s+of\s+tenancy\s+)?notice|notice\s+of\s+termination|notice\s+(?:or\s+demand\s+)?(?:before|prior\s+to)\s+(?:an?\s+)?(?:eviction|possession))|without\s+(?:any\s+)?(?:prior\s+)?notice\s+to\s+quit/i,
+    "This clause has you give up a required notice or demand before the landlord can start an eviction.",
+    "Chicago's RLTO does not allow a lease to make the tenant waive a required written termination notice or demand.",
+    "Could we remove this notice waiver? I understand Chicago's RLTO requires certain written notices before termination or eviction.",
   ),
   unequalTerminationMatcher,
+  generalOrdinanceWaiverMatcher,
   lateFeeMatcher,
   earlyPaymentDiscountMatcher,
 ];

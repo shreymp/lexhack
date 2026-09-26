@@ -8,17 +8,31 @@ interface HowWeCheckedProps {
   rulePack: AnalysisResult["rule_pack"];
 }
 
+function checkingSummary(stats: AnalysisResult["stats"]): string {
+  const parts: string[] = [];
+  if (stats.quotes_rejected > 0) {
+    const n = stats.quotes_rejected;
+    parts.push(
+      `${n} quote${n === 1 ? "" : "s"} from the AI that we couldn't find in your lease ${n === 1 ? "was" : "were"} removed.`,
+    );
+  }
+  if (stats.rule_citations_downgraded > 0) {
+    const n = stats.rule_citations_downgraded;
+    parts.push(`${n} citation${n === 1 ? "" : "s"} ${n === 1 ? "was" : "were"} downgraded.`);
+  }
+  if (parts.length === 0) {
+    return "Every quote shown was matched to your lease text.";
+  }
+  return parts.join(" ");
+}
+
 export default function HowWeChecked({ stats, provider, rulePack }: HowWeCheckedProps) {
   return (
     <footer className="site-footer">
       <div className="container how-we-checked">
         <h2 className="section-title">How we checked</h2>
 
-        <p>
-          {stats.quotes_rejected} quote{stats.quotes_rejected === 1 ? "" : "s"} the AI produced that
-          we couldn&apos;t find in your lease were removed. {stats.rule_citations_downgraded} citation
-          {stats.rule_citations_downgraded === 1 ? " was" : "s were"} downgraded.
-        </p>
+        <p>{checkingSummary(stats)}</p>
 
         <dl>
           <dt>AI provider</dt>

@@ -6,9 +6,11 @@ import CopyButton from "@/components/CopyButton";
 interface DetailPanelProps {
   clause: Clause | null;
   finding: ClauseFinding | null;
+  /** Hide the top label chip — used when the caller (e.g. an accordion card) already shows one. */
+  hideChip?: boolean;
 }
 
-export default function DetailPanel({ clause, finding }: DetailPanelProps) {
+export default function DetailPanel({ clause, finding, hideChip = false }: DetailPanelProps) {
   if (!clause) {
     return (
       <div className="detail-panel">
@@ -42,14 +44,16 @@ export default function DetailPanel({ clause, finding }: DetailPanelProps) {
 
   return (
     <div className="detail-panel">
-      <span className={`chip chip--${info.key}`}>
-        <span className="chip-icon" aria-hidden="true">
-          {info.icon}
+      {!hideChip && (
+        <span className={`chip chip--${info.key}`}>
+          <span className="chip-icon" aria-hidden="true">
+            {info.icon}
+          </span>
+          {info.name}
         </span>
-        {info.name}
-      </span>
+      )}
 
-      <div className="detail-block" style={{ marginTop: 14 }}>
+      <div className="detail-block" style={{ marginTop: hideChip ? 0 : 14 }}>
         <h4>In plain English</h4>
         <p style={{ margin: 0 }}>{finding.plain_english}</p>
       </div>

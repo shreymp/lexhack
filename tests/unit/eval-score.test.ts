@@ -156,6 +156,55 @@ describe("scoreResult", () => {
     expect(report.standard_total).toBe(1);
     expect(report.false_alarms_red).toBe(1);
     expect(report.false_alarms_yellow).toBe(0);
+    expect(report.standard_correct).toBe(0);
+    expect(report.standard_unanalyzed).toBe(0);
+  });
+
+  it("counts a correctly-labeled standard clause as standard_correct with rule_ok true", () => {
+    const result = baseResult({
+      source_text: source,
+      clauses,
+      findings: [makeFinding("c3", "ordinary standard clause", c3start, { label: "standard", rule_id: null })],
+    });
+    const report = scoreResult(result, labels);
+    expect(report.standard_total).toBe(1);
+    expect(report.standard_correct).toBe(1);
+    expect(report.standard_unanalyzed).toBe(0);
+    expect(report.false_alarms_red).toBe(0);
+    expect(report.false_alarms_yellow).toBe(0);
+    const row = report.rows.find((r) => r.clause_id === "c3");
+    expect(row?.category).toBe("standard_ok");
+    expect(row?.rule_ok).toBe(true);
+  });
+
+  it("treats an unanalyzed standard clause as its own category, not a correct catch or a false alarm", () => {
+    // No finding for c3 (the standard clause) at all.
+    const result = baseResult({
+      source_text: source,
+      clauses,
+      findings: [makeFinding("c1", "confesses judgment", c1start + c1text.indexOf("confesses judgment"))],
+    });
+    const report = scoreResult(result, labels);
+    expect(report.standard_total).toBe(1);
+    expect(report.standard_unanalyzed).toBe(1);
+    expect(report.standard_correct).toBe(0);
+    expect(report.false_alarms_red).toBe(0);
+    expect(report.false_alarms_yellow).toBe(0);
+    const row = report.rows.find((r) => r.clause_id === "c3");
+    expect(row?.category).toBe("standard_unanalyzed");
+    expect(row?.got_label).toBe("unanalyzed");
+    expect(row?.rule_ok).toBe("n/a");
+  });
+
+  it("reports rule_ok as \"n/a\" (not false) for red/yellow clauses with no finding at all", () => {
+    const result = baseResult({ source_text: source, clauses, findings: [] });
+    const report = scoreResult(result, labels);
+    const redRow = report.rows.find((r) => r.clause_id === "c1");
+    const yellowRow = report.rows.find((r) => r.clause_id === "c2");
+    expect(redRow?.category).toBe("red_missed");
+    expect(redRow?.rule_ok).toBe("n/a");
+    expect(yellowRow?.category).toBe("yellow_missed");
+    expect(yellowRow?.rule_ok).toBe("n/a");
   });
 
   it("reports missing_correct as false when a missing protection is marked found but expected not_found", () => {

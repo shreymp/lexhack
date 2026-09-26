@@ -10,7 +10,6 @@ import FindingsSidebar from "@/components/FindingsSidebar";
 import MissingProtections from "@/components/MissingProtections";
 import QuestionsToAsk from "@/components/QuestionsToAsk";
 import DocumentView from "@/components/DocumentView";
-import DetailPanel from "@/components/DetailPanel";
 import HowWeChecked from "@/components/HowWeChecked";
 import type { AnalysisResult } from "@/lib/types";
 import sampleResultJson from "@/tests/fixtures/sample-result.json";
@@ -73,10 +72,19 @@ function ResultsInner() {
     );
   }
 
-  const selectedClause = result.clauses.find((c) => c.id === selectedClauseId) ?? null;
-  const selectedFinding = selectedClauseId
-    ? result.findings.find((f) => f.clause_id === selectedClauseId) ?? null
-    : null;
+  const selectedHasFinding = Boolean(
+    selectedClauseId && result.findings.some((f) => f.clause_id === selectedClauseId),
+  );
+  const selectedIsUnanalyzed = Boolean(selectedClauseId) && !selectedHasFinding;
+
+  // Clicking a clause in the document always selects/expands it, even if it's
+  // already selected. Clicking a finding card toggles it open/closed instead.
+  function selectFromDocument(clauseId: string) {
+    setSelectedClauseId(clauseId);
+  }
+  function toggleFromCard(clauseId: string) {
+    setSelectedClauseId((prev) => (prev === clauseId ? null : clauseId));
+  }
 
   return (
     <>
@@ -84,26 +92,10 @@ function ResultsInner() {
       <main>
         <div className="container results-header">
           <ResultsBanners provider={result.provider} coverage={result.coverage} warnings={result.warnings} />
-          <SummaryCard summary={result.summary} findings={result.findings} />
         </div>
 
         <div className="container results-layout">
-          <div className="results-sidebar">
-            <FindingsSidebar
-              clauses={result.clauses}
-              findings={result.findings}
-              selectedClauseId={selectedClauseId}
-              onSelect={setSelectedClauseId}
-            />
-            <MissingProtections missing={result.missing} />
-            <QuestionsToAsk questions={result.questions_to_ask} />
-            <div>
-              <h2 className="section-title">Clause details</h2>
-              <DetailPanel clause={selectedClause} finding={selectedFinding} />
-            </div>
-          </div>
-
-          <div>
+          <div className="doc-column">
             <button
               type="button"
               className="btn btn-secondary doc-toggle"
@@ -119,9 +111,26 @@ function ResultsInner() {
                 clauses={result.clauses}
                 findings={result.findings}
                 selectedClauseId={selectedClauseId}
-                onSelectClause={setSelectedClauseId}
+                onSelectClause={selectFromDocument}
               />
             </div>
+          </div>
+
+          <div className="findings-column">
+            <SummaryCard summary={result.summary} findings={result.findings} />
+            {selectedIsUnanalyzed && (
+              <p className="helper-text" role="status" style={{ marginTop: -4 }}>
+                This part of the lease wasn&apos;t analyzed as its own clause.
+              </p>
+            )}
+            <FindingsSidebar
+              clauses={result.clauses}
+              findings={result.findings}
+              selectedClauseId={selectedClauseId}
+              onToggle={toggleFromCard}
+            />
+            <MissingProtections missing={result.missing} />
+            <QuestionsToAsk questions={result.questions_to_ask} />
           </div>
         </div>
       </main>
