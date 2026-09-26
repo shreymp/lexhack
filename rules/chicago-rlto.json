@@ -1,0 +1,236 @@
+{
+  "id": "chicago-rlto",
+  "name": "Chicago Residential Landlord and Tenant Ordinance (RLTO)",
+  "jurisdiction": "City of Chicago, Illinois",
+  "version": "0.1.0",
+  "date_verified": "2026-09-26",
+  "caveats": [
+    "Rule text was checked against the City of Chicago's Residential Landlord and Tenant Guide (last updated Aug 25, 2021). Later amendments may have changed wording or subsection letters; check the current Municipal Code at codelibrary.amlegal.com before relying on a citation.",
+    "These rules were extracted by an AI assistant and have not yet been reviewed by a lawyer.",
+    "The RLTO does not cover every Chicago rental (see § 5-12-020 exclusions).",
+    "A clean result does not mean a lease is fair or lawful — this pack covers only a small set of rules."
+  ],
+  "remedies_context": [
+    {
+      "citation": "Chicago Mun. Code § 5-12-140 (closing paragraph)",
+      "summary": "A prohibited provision is unenforceable. A tenant may recover actual damages caused by its enforcement, and if the landlord tries to enforce one, the tenant may recover two months' rent.",
+      "official_text": "A provision prohibited by this section included in a rental agreement is unenforceable. The tenant may recover actual damages sustained by the tenant because of the enforcement of a prohibited provision. If the landlord attempts to enforce a provision in a rental agreement prohibited by this section, the tenant may recover two months' rent."
+    }
+  ],
+  "coverage": {
+    "citation": "Chicago Mun. Code § 5-12-020",
+    "summary": "The RLTO does not govern some rentals unless the lease was set up to avoid the ordinance.",
+    "exclusions": [
+      {
+        "id": "owner_occupied_6",
+        "summary": "Units in owner-occupied buildings with six or fewer units (§ 5-12-020(a)); some sections (5-12-130(j), 5-12-160) still apply."
+      },
+      {
+        "id": "hotel_short_stay",
+        "summary": "Hotels, motels, inns, B&Bs, rooming/boarding houses — until the tenant has stayed 32+ continuous days and pays monthly rent (§ 5-12-020(b))."
+      },
+      {
+        "id": "institutional",
+        "summary": "Hospitals, shelters, nursing/extended care, and school- or university-controlled student housing (§ 5-12-020(c))."
+      },
+      {
+        "id": "purchase_contract",
+        "summary": "A unit occupied by a buyer before closing, or a seller after closing, under a purchase contract (§ 5-12-020(d))."
+      },
+      {
+        "id": "employee",
+        "summary": "A unit occupied by the landlord's employee whose right to live there depends on employment on the premises (§ 5-12-020(e))."
+      },
+      {
+        "id": "coop",
+        "summary": "A cooperative unit occupied by a holder of a proprietary lease (§ 5-12-020(f))."
+      }
+    ]
+  },
+  "rules": [
+    {
+      "id": "chi-rlto-140a-waiver",
+      "kind": "prohibited_provision",
+      "title": "Waives your RLTO rights",
+      "summary": "A lease cannot make you give up rights, remedies or obligations the Chicago RLTO gives you.",
+      "citation": "Chicago Mun. Code § 5-12-140(a)",
+      "official_text": "Except as otherwise specifically provided by this chapter, no rental agreement may provide that the landlord or tenant: (a) Agrees to waive or forego rights, remedies or obligations provided under this chapter;",
+      "what_to_look_for": "Clauses where the tenant waives, gives up, or forgoes rights or remedies under the RLTO or 'any landlord-tenant ordinance', or where the landlord is released from RLTO obligations (e.g., duty to maintain the premises under § 5-12-070). Only use this rule when the clause clearly removes an RLTO right; use a more specific rule if one fits.",
+      "source_url": "https://chicityclerk.s3.amazonaws.com/s3fs-public/pages/2021_LTB_08112021_C.pdf",
+      "verified_against": "City of Chicago, Residential Landlord and Tenant Guide (Municipal Code ch. 5-12 and 5-14), 'Last book update on August 25, 2021' — official City Clerk publication. Not yet checked against the live American Legal Publishing code (blocked from the build environment).",
+      "date_verified": "2026-09-26",
+      "verified_by": "Claude (AI coding assistant) during build — REQUIRES review by a human with legal training before relying on it",
+      "status": "needs_human_verification"
+    },
+    {
+      "id": "chi-rlto-140b-confession",
+      "kind": "prohibited_provision",
+      "title": "Confession of judgment",
+      "summary": "A lease cannot let anyone 'confess judgment' — i.e., let the landlord get a court judgment against you without you being able to defend yourself.",
+      "citation": "Chicago Mun. Code § 5-12-140(b)",
+      "official_text": "Except as otherwise specifically provided by this chapter, no rental agreement may provide that the landlord or tenant: (b) Authorizes any person to confess judgment on a claim arising out of the rental agreement;",
+      "what_to_look_for": "Language like 'confess judgment', 'cognovit', 'warrant of attorney', or tenant authorizing any attorney to appear for them and admit liability / enter judgment.",
+      "source_url": "https://chicityclerk.s3.amazonaws.com/s3fs-public/pages/2021_LTB_08112021_C.pdf",
+      "verified_against": "City of Chicago, Residential Landlord and Tenant Guide (Municipal Code ch. 5-12 and 5-14), 'Last book update on August 25, 2021' — official City Clerk publication. Not yet checked against the live American Legal Publishing code (blocked from the build environment).",
+      "date_verified": "2026-09-26",
+      "verified_by": "Claude (AI coding assistant) during build — REQUIRES review by a human with legal training before relying on it",
+      "status": "needs_human_verification"
+    },
+    {
+      "id": "chi-rlto-140c-liability-limit",
+      "kind": "prohibited_provision",
+      "title": "Limits the landlord's legal liability",
+      "summary": "A lease cannot limit the landlord's (or tenant's) liability that exists under the law — e.g., 'landlord is not responsible for any damage or injury, even if caused by landlord's negligence'.",
+      "citation": "Chicago Mun. Code § 5-12-140(c)",
+      "official_text": "Except as otherwise specifically provided by this chapter, no rental agreement may provide that the landlord or tenant: (c) Agrees to the limitation of any liability of the landlord or tenant arising under law;",
+      "what_to_look_for": "Exculpatory clauses: landlord 'shall not be liable' for injury/damage/loss caused by landlord's negligence or failure to repair; tenant must hold landlord harmless / indemnify landlord for landlord's own fault. Do NOT flag ordinary clauses saying tenant is responsible for damage the tenant causes, or recommending renter's insurance.",
+      "source_url": "https://chicityclerk.s3.amazonaws.com/s3fs-public/pages/2021_LTB_08112021_C.pdf",
+      "verified_against": "City of Chicago, Residential Landlord and Tenant Guide (Municipal Code ch. 5-12 and 5-14), 'Last book update on August 25, 2021' — official City Clerk publication. Not yet checked against the live American Legal Publishing code (blocked from the build environment).",
+      "date_verified": "2026-09-26",
+      "verified_by": "Claude (AI coding assistant) during build — REQUIRES review by a human with legal training before relying on it",
+      "status": "needs_human_verification"
+    },
+    {
+      "id": "chi-rlto-140d-notice-waiver",
+      "kind": "prohibited_provision",
+      "title": "Waives required termination notices",
+      "summary": "A lease cannot make you give up the written termination-of-tenancy notice (or the way it must be served) that state law or the RLTO requires.",
+      "citation": "Chicago Mun. Code § 5-12-140(d)",
+      "official_text": "Except as otherwise specifically provided by this chapter, no rental agreement may provide that the landlord or tenant: (d) Agrees to waive any written termination of tenancy notice or manner of service thereof provided under state law or this chapter;",
+      "what_to_look_for": "Tenant waives notice to quit, demand for rent, 5-day/10-day/30-day notices, or agrees landlord may evict / retake possession without notice or service.",
+      "source_url": "https://chicityclerk.s3.amazonaws.com/s3fs-public/pages/2021_LTB_08112021_C.pdf",
+      "verified_against": "City of Chicago, Residential Landlord and Tenant Guide (Municipal Code ch. 5-12 and 5-14), 'Last book update on August 25, 2021' — official City Clerk publication. Not yet checked against the live American Legal Publishing code (blocked from the build environment).",
+      "date_verified": "2026-09-26",
+      "verified_by": "Claude (AI coding assistant) during build — REQUIRES review by a human with legal training before relying on it",
+      "status": "needs_human_verification"
+    },
+    {
+      "id": "chi-rlto-140e-jury-waiver",
+      "kind": "prohibited_provision",
+      "title": "Waives right to a jury trial",
+      "summary": "A lease cannot make either party give up the right to a jury trial.",
+      "citation": "Chicago Mun. Code § 5-12-140(e)",
+      "official_text": "Except as otherwise specifically provided by this chapter, no rental agreement may provide that the landlord or tenant: (e) Agrees to waive the right of any party to a trial by jury;",
+      "what_to_look_for": "'waive trial by jury', 'jury waiver', or mandatory arbitration language that states the tenant gives up a jury trial.",
+      "source_url": "https://chicityclerk.s3.amazonaws.com/s3fs-public/pages/2021_LTB_08112021_C.pdf",
+      "verified_against": "City of Chicago, Residential Landlord and Tenant Guide (Municipal Code ch. 5-12 and 5-14), 'Last book update on August 25, 2021' — official City Clerk publication. Not yet checked against the live American Legal Publishing code (blocked from the build environment).",
+      "date_verified": "2026-09-26",
+      "verified_by": "Claude (AI coding assistant) during build — REQUIRES review by a human with legal training before relying on it",
+      "status": "needs_human_verification"
+    },
+    {
+      "id": "chi-rlto-140f-attorney-fees",
+      "kind": "prohibited_provision",
+      "title": "Makes you pay the landlord's attorney's fees",
+      "summary": "A lease cannot say that, if there's a lawsuit about the tenancy, you'll pay the landlord's attorney's fees — except where a court rule, statute or ordinance provides for it.",
+      "citation": "Chicago Mun. Code § 5-12-140(f)",
+      "official_text": "Except as otherwise specifically provided by this chapter, no rental agreement may provide that the landlord or tenant: (f) Agrees that in the event of a lawsuit arising out of the tenancy the tenant will pay the landlord's attorney's fees except as provided for by court rules, statute, or ordinance;",
+      "what_to_look_for": "Tenant must pay landlord's attorney's fees, legal fees, or collection costs incurred in any action/lawsuit. (A mutual 'prevailing party' clause that just restates § 5-12-180 is NOT a violation — label it standard or one_sided with explanation.)",
+      "source_url": "https://chicityclerk.s3.amazonaws.com/s3fs-public/pages/2021_LTB_08112021_C.pdf",
+      "verified_against": "City of Chicago, Residential Landlord and Tenant Guide (Municipal Code ch. 5-12 and 5-14), 'Last book update on August 25, 2021' — official City Clerk publication. Not yet checked against the live American Legal Publishing code (blocked from the build environment).",
+      "date_verified": "2026-09-26",
+      "verified_by": "Claude (AI coding assistant) during build — REQUIRES review by a human with legal training before relying on it",
+      "status": "needs_human_verification"
+    },
+    {
+      "id": "chi-rlto-140g-unequal-termination",
+      "kind": "prohibited_provision",
+      "title": "Unequal termination rights",
+      "summary": "A lease cannot let one side end the lease at a different time or on shorter notice than the other side — unless that's disclosed in a separate written notice.",
+      "citation": "Chicago Mun. Code § 5-12-140(g)",
+      "official_text": "Except as otherwise specifically provided by this chapter, no rental agreement may provide that the landlord or tenant: (g) Agrees that either party may cancel or terminate a rental agreement at a different time or within a shorter time period than the other party, unless such provision is disclosed in a separate written notice;",
+      "what_to_look_for": "Landlord may terminate on short notice (e.g., 7 or 30 days) while tenant must give longer notice or cannot terminate early at all. Mention in reasoning that it is enforceable if disclosed in a separate written notice, which we cannot see.",
+      "source_url": "https://chicityclerk.s3.amazonaws.com/s3fs-public/pages/2021_LTB_08112021_C.pdf",
+      "verified_against": "City of Chicago, Residential Landlord and Tenant Guide (Municipal Code ch. 5-12 and 5-14), 'Last book update on August 25, 2021' — official City Clerk publication. Not yet checked against the live American Legal Publishing code (blocked from the build environment).",
+      "date_verified": "2026-09-26",
+      "verified_by": "Claude (AI coding assistant) during build — REQUIRES review by a human with legal training before relying on it",
+      "status": "needs_human_verification"
+    },
+    {
+      "id": "chi-rlto-140h-late-fee",
+      "kind": "prohibited_provision",
+      "title": "Late fee over the Chicago cap",
+      "summary": "Late fees are capped at $10 per month for the first $500 of monthly rent plus 5% of any rent above $500. Example: $1,500 rent → max $10 + 5% × $1,000 = $60 per month.",
+      "citation": "Chicago Mun. Code § 5-12-140(h)",
+      "official_text": "Except as otherwise specifically provided by this chapter, no rental agreement may provide that the landlord or tenant: (h) Agrees that a tenant shall pay a charge, fee or penalty in excess of $10.00 per month for the first $500.00 in monthly rent plus five percent per month for any amount in excess of $500.00 in monthly rent for the late payment of rent;",
+      "what_to_look_for": "Any late charge / late fee / penalty for late rent. ALWAYS fill the late_fee extraction for such clauses; the application code (not you) computes the cap and decides whether this rule applies.",
+      "source_url": "https://chicityclerk.s3.amazonaws.com/s3fs-public/pages/2021_LTB_08112021_C.pdf",
+      "verified_against": "City of Chicago, Residential Landlord and Tenant Guide (Municipal Code ch. 5-12 and 5-14), 'Last book update on August 25, 2021' — official City Clerk publication. Not yet checked against the live American Legal Publishing code (blocked from the build environment).",
+      "date_verified": "2026-09-26",
+      "verified_by": "Claude (AI coding assistant) during build — REQUIRES review by a human with legal training before relying on it",
+      "status": "needs_human_verification",
+      "deterministic_check": "late_fee_cap"
+    },
+    {
+      "id": "chi-rlto-140i-early-discount",
+      "kind": "prohibited_provision",
+      "title": "Oversized 'early payment discount'",
+      "summary": "A lease cannot disguise a late fee as a big discount for paying early: an early-payment discount is capped the same way as late fees ($10 on the first $500 of rent + 5% above $500).",
+      "citation": "Chicago Mun. Code § 5-12-140(i)",
+      "official_text": "Except as otherwise specifically provided by this chapter, no rental agreement may provide that the landlord or tenant: (i) Agrees that, if a tenant pays rent before a specified date or within a specified time period in the month, the tenant shall receive a discount or reduction in the rental amount in excess of $10.00 per month for the first $500.00 in monthly rent plus five percent per month for any amount in excess of $500.00 in monthly rent.",
+      "what_to_look_for": "Rent 'discount', 'concession', or 'reduced rent' for paying on or before a date. Fill late_fee extraction with the discount amount; code computes the cap.",
+      "source_url": "https://chicityclerk.s3.amazonaws.com/s3fs-public/pages/2021_LTB_08112021_C.pdf",
+      "verified_against": "City of Chicago, Residential Landlord and Tenant Guide (Municipal Code ch. 5-12 and 5-14), 'Last book update on August 25, 2021' — official City Clerk publication. Not yet checked against the live American Legal Publishing code (blocked from the build environment).",
+      "date_verified": "2026-09-26",
+      "verified_by": "Claude (AI coding assistant) during build — REQUIRES review by a human with legal training before relying on it",
+      "status": "needs_human_verification",
+      "deterministic_check": "early_payment_discount_cap"
+    },
+    {
+      "id": "chi-rlto-050-entry-notice",
+      "kind": "prohibited_provision",
+      "title": "Landlord entry without required notice",
+      "summary": "Except for emergencies or unexpected building repairs, the landlord must give at least 2 days' notice before entering. A lease clause giving that up waives an RLTO right, which § 5-12-140(a) prohibits.",
+      "citation": "Chicago Mun. Code § 5-12-050, via § 5-12-140(a)",
+      "official_text": "§ 5-12-050: \"Except in cases where access is authorized by subsection (f) or (h) of this section, the landlord shall give the tenant notice of the landlord's intent to enter of no less than two days.\" § 5-12-140(a): no rental agreement may provide that the tenant \"(a) Agrees to waive or forego rights, remedies or obligations provided under this chapter;\"",
+      "what_to_look_for": "Landlord may enter 'at any time', 'without notice', or with less than 2 days' notice for non-emergency reasons (showings, inspections, routine repairs). Entry without notice in an emergency is allowed — do not flag that.",
+      "source_url": "https://chicityclerk.s3.amazonaws.com/s3fs-public/pages/2021_LTB_08112021_C.pdf",
+      "verified_against": "City of Chicago, Residential Landlord and Tenant Guide (Municipal Code ch. 5-12 and 5-14), 'Last book update on August 25, 2021' — official City Clerk publication. Not yet checked against the live American Legal Publishing code (blocked from the build environment).",
+      "date_verified": "2026-09-26",
+      "verified_by": "Claude (AI coding assistant) during build — REQUIRES review by a human with legal training before relying on it",
+      "status": "needs_human_verification"
+    },
+    {
+      "id": "chi-rlto-080d-deposit-return",
+      "kind": "prohibited_provision",
+      "title": "Security deposit return slower or broader than the RLTO allows",
+      "summary": "The landlord must return your deposit (minus unpaid rent and reasonable repair costs beyond normal wear and tear, with an itemized statement) within 45 days after you move out. A lease that gives the landlord longer, or lets them keep it for normal wear and tear or as a flat non-refundable amount, waives RLTO rights (§ 5-12-140(a)).",
+      "citation": "Chicago Mun. Code § 5-12-080(d), via § 5-12-140(a)",
+      "official_text": "§ 5-12-080(d): \"The landlord shall, within 45 days after the date that the tenant vacates the dwelling unit ... return to the tenant the security deposit or any balance thereof and the required interest thereon; provided, however, that the landlord ... may deduct ... (1) Any unpaid rent ... and (2) A reasonable amount necessary to repair any damage caused to the premises by the tenant ..., reasonable wear and tear excluded.\"",
+      "what_to_look_for": "Deposit returned in more than 45 days; deposit forfeited/kept automatically; deductions for normal wear and tear, routine cleaning or painting regardless of condition; deposit declared non-refundable. Do NOT flag a separate, clearly labeled move-in fee under this rule (label it one_sided if unusual).",
+      "source_url": "https://chicityclerk.s3.amazonaws.com/s3fs-public/pages/2021_LTB_08112021_C.pdf",
+      "verified_against": "City of Chicago, Residential Landlord and Tenant Guide (Municipal Code ch. 5-12 and 5-14), 'Last book update on August 25, 2021' — official City Clerk publication. Not yet checked against the live American Legal Publishing code (blocked from the build environment).",
+      "date_verified": "2026-09-26",
+      "verified_by": "Claude (AI coding assistant) during build — REQUIRES review by a human with legal training before relying on it",
+      "status": "needs_human_verification"
+    },
+    {
+      "id": "chi-rlto-170-summary",
+      "kind": "missing_protection",
+      "title": "RLTO summary must be attached",
+      "summary": "The landlord must attach the City's official RLTO summary to every written lease (new or renewal) when it is first offered. If it isn't, the tenant may be able to end the lease with written notice and recover $100 in court.",
+      "citation": "Chicago Mun. Code § 5-12-170",
+      "official_text": "\"A copy of such summary shall be attached to each written rental agreement when any such agreement is initially offered to any tenant or prospective tenant by or on behalf of a landlord and whether such agreement is for a new rental or a renewal thereof.\" ... \"If the landlord acts in violation of this section, the tenant may terminate the rental agreement by written notice. The written notice shall specify the date of termination no later than 30 days from the date of the written notice. If a tenant in a civil legal proceeding against his landlord establishes that a violation of this section has occurred, he shall be entitled to recover $100.00 in damages.\"",
+      "what_to_look_for": "Look for a reference to an attached 'Residential Landlord and Tenant Ordinance Summary' / 'RLTO summary'.",
+      "source_url": "https://chicityclerk.s3.amazonaws.com/s3fs-public/pages/2021_LTB_08112021_C.pdf",
+      "verified_against": "City of Chicago, Residential Landlord and Tenant Guide (Municipal Code ch. 5-12 and 5-14), 'Last book update on August 25, 2021' — official City Clerk publication. Not yet checked against the live American Legal Publishing code (blocked from the build environment).",
+      "date_verified": "2026-09-26",
+      "verified_by": "Claude (AI coding assistant) during build — REQUIRES review by a human with legal training before relying on it",
+      "status": "needs_human_verification"
+    },
+    {
+      "id": "chi-rlto-080a3-deposit-bank",
+      "kind": "missing_protection",
+      "title": "Where your security deposit is held",
+      "summary": "If the lease takes a security deposit, it must clearly state the name and address of the bank or financial institution where the deposit will be held.",
+      "citation": "Chicago Mun. Code § 5-12-080(a)(3)",
+      "official_text": "\"The name and address of the financial institution where the security deposit will be deposited shall be clearly and conspicuously disclosed in the written rental agreement signed by the tenant.\"",
+      "what_to_look_for": "If a security deposit is mentioned, look for the name AND address of the bank / financial institution holding it.",
+      "source_url": "https://chicityclerk.s3.amazonaws.com/s3fs-public/pages/2021_LTB_08112021_C.pdf",
+      "verified_against": "City of Chicago, Residential Landlord and Tenant Guide (Municipal Code ch. 5-12 and 5-14), 'Last book update on August 25, 2021' — official City Clerk publication. Not yet checked against the live American Legal Publishing code (blocked from the build environment).",
+      "date_verified": "2026-09-26",
+      "verified_by": "Claude (AI coding assistant) during build — REQUIRES review by a human with legal training before relying on it",
+      "status": "needs_human_verification"
+    }
+  ]
+}

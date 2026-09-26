@@ -1,0 +1,261 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-26T15:00:00.000Z",
+  "source_kind": "text",
+  "source_text": "RESIDENTIAL LEASE AGREEMENT\n\n1. Parties and Premises\nThis Lease is entered into between Marguerite Okafor (\"Landlord\") and Devon Pruitt (\"Tenant\") for the property located at 4821 N. Rockwell Street, Unit 2, Chicago, Illinois 60625.\n\n2. Term and Rent\nThe term of this Lease is twelve (12) months, beginning January 1, 2027. Tenant shall pay rent of $1,500.00 per month, due on the first day of each month.\n\n3. Late Fees\nIf rent is not received by the 5th day of the month, Tenant shall pay a late fee of $150.00 for that month, in addition to the rent owed.\n\n4. Security Deposit\nTenant shall pay a security deposit of $1,500.00 upon signing. Landlord shall return the deposit, less lawful deductions, within 60 days after Tenant vacates the unit.\n\n5. Landlord's Right of Entry\nLandlord may enter the premises at any time and without prior notice to Tenant for any reason, including routine inspection and showing the unit to prospective tenants.\n\n6. Pet Policy\nTenant may keep one cat or dog with Landlord's written approval. Tenant shall pay a non-refundable pet fee of $500.00, which is separate from and in addition to the security deposit.\n\n7. Waiver of Jury Trial\nLandlord and Tenant each knowingly and voluntarily waive the right to a trial by jury in any action arising out of or related to this Lease.\n\n8. Maintenance and Repairs\nTenant shall promptly notify Landlord in writing of any condition requiring repair. Landlord shall make repairs within a reasonable time after receiving notice.\n\n9. Signatures\nLandlord: Marguerite Okafor        Date: __________\nTenant: Devon Pruitt        Date: __________",
+  "clauses": [
+    {
+      "id": "c1",
+      "index": 0,
+      "heading": "1.",
+      "text": "This Lease is entered into between Marguerite Okafor (\"Landlord\") and Devon Pruitt (\"Tenant\") for the property located at 4821 N. Rockwell Street, Unit 2, Chicago, Illinois 60625.",
+      "start": 53,
+      "end": 232
+    },
+    {
+      "id": "c2",
+      "index": 1,
+      "heading": "2.",
+      "text": "The term of this Lease is twelve (12) months, beginning January 1, 2027. Tenant shall pay rent of $1,500.00 per month, due on the first day of each month.",
+      "start": 251,
+      "end": 405
+    },
+    {
+      "id": "c3",
+      "index": 2,
+      "heading": "3.",
+      "text": "If rent is not received by the 5th day of the month, Tenant shall pay a late fee of $150.00 for that month, in addition to the rent owed.",
+      "start": 420,
+      "end": 557
+    },
+    {
+      "id": "c4",
+      "index": 3,
+      "heading": "4.",
+      "text": "Tenant shall pay a security deposit of $1,500.00 upon signing. Landlord shall return the deposit, less lawful deductions, within 60 days after Tenant vacates the unit.",
+      "start": 579,
+      "end": 746
+    },
+    {
+      "id": "c5",
+      "index": 4,
+      "heading": "5.",
+      "text": "Landlord may enter the premises at any time and without prior notice to Tenant for any reason, including routine inspection and showing the unit to prospective tenants.",
+      "start": 777,
+      "end": 945
+    },
+    {
+      "id": "c6",
+      "index": 5,
+      "heading": "6.",
+      "text": "Tenant may keep one cat or dog with Landlord's written approval. Tenant shall pay a non-refundable pet fee of $500.00, which is separate from and in addition to the security deposit.",
+      "start": 961,
+      "end": 1143
+    },
+    {
+      "id": "c7",
+      "index": 6,
+      "heading": "7.",
+      "text": "Landlord and Tenant each knowingly and voluntarily waive the right to a trial by jury in any action arising out of or related to this Lease.",
+      "start": 1169,
+      "end": 1309
+    },
+    {
+      "id": "c8",
+      "index": 7,
+      "heading": "8.",
+      "text": "Tenant shall promptly notify Landlord in writing of any condition requiring repair. Landlord shall make repairs within a reasonable time after receiving notice.",
+      "start": 1338,
+      "end": 1498
+    }
+  ],
+  "findings": [
+    {
+      "clause_id": "c2",
+      "quote": "Tenant shall pay rent of $1,500.00 per month, due on the first day of each month.",
+      "quote_start": 324,
+      "quote_end": 405,
+      "plain_english": "Rent is $1,500 per month, due on the 1st. This is a standard rent clause.",
+      "label": "standard",
+      "rule_id": null,
+      "reasoning": "States a plain rent amount and due date with nothing unusual or one-sided.",
+      "suggested_message": null,
+      "late_fee_check": null,
+      "verification": {
+        "quote_match": "exact",
+        "label_adjusted": null
+      }
+    },
+    {
+      "clause_id": "c3",
+      "quote": "Tenant shall pay a late fee of $150.00 for that month",
+      "quote_start": 473,
+      "quote_end": 526,
+      "plain_english": "If rent is even one day late, you owe a flat $150 late fee.",
+      "label": "likely_unenforceable",
+      "rule_id": "chi-rlto-140h-late-fee",
+      "reasoning": "Chicago caps late fees at $10 per month for the first $500 of rent plus 5% of the rent above $500. On $1,500 rent, the cap is $60. This clause charges $150, well over that cap.",
+      "suggested_message": "Chicago's RLTO (§ 5-12-140(h)) caps late fees at $10 plus 5% of rent over $500 — $60/month on this lease. Can we change the late fee in Section 3 to match that cap?",
+      "late_fee_check": {
+        "monthly_rent": 1500,
+        "rent_source": "lease_text",
+        "worst_case_monthly_fee": 150,
+        "cap": 60,
+        "over_cap": true,
+        "explanation": "Cap on $1,500 rent = $10 + 5% x ($1,500 - $500) = $10 + $50 = $60. This clause charges $150, which is $90 over the cap."
+      },
+      "verification": {
+        "quote_match": "exact",
+        "label_adjusted": null
+      }
+    },
+    {
+      "clause_id": "c4",
+      "quote": "within 60 days after Tenant vacates the unit",
+      "quote_start": 701,
+      "quote_end": 745,
+      "plain_english": "Your deposit can be held for up to 60 days after you move out.",
+      "label": "likely_unenforceable",
+      "rule_id": "chi-rlto-080d-deposit-return",
+      "reasoning": "The RLTO requires the deposit to be returned within 45 days after the tenant vacates. This clause allows 60 days, 15 days longer than the law permits.",
+      "suggested_message": "Chicago's RLTO (§ 5-12-080(d)) requires security deposits to be returned within 45 days of move-out. Can Section 4 be changed from 60 days to 45 days?",
+      "late_fee_check": null,
+      "verification": {
+        "quote_match": "exact",
+        "label_adjusted": null
+      }
+    },
+    {
+      "clause_id": "c5",
+      "quote": "Landlord may enter the premises at any time and without prior notice to Tenant for any reason",
+      "quote_start": 777,
+      "quote_end": 870,
+      "plain_english": "The landlord can enter your home whenever they want, without telling you first.",
+      "label": "likely_unenforceable",
+      "rule_id": "chi-rlto-050-entry-notice",
+      "reasoning": "Outside of emergencies, the RLTO requires landlords to give at least two days' notice before entering. Letting the landlord enter 'at any time' and 'without prior notice' for routine reasons gives up that right, which the RLTO does not allow a lease to do.",
+      "suggested_message": "Under Chicago's RLTO (§ 5-12-050), you're required to give at least 2 days' notice before entering except in emergencies. Can Section 5 be updated to reflect that?",
+      "late_fee_check": null,
+      "verification": {
+        "quote_match": "exact",
+        "label_adjusted": null
+      }
+    },
+    {
+      "clause_id": "c6",
+      "quote": "Tenant shall pay a non-refundable pet fee of $500.00",
+      "quote_start": 1026,
+      "quote_end": 1078,
+      "plain_english": "There's a $500 pet fee that you don't get back, on top of your security deposit.",
+      "label": "one_sided",
+      "rule_id": null,
+      "reasoning": "A non-refundable pet fee this size, stacked on top of the security deposit, is unusually high and worth negotiating, but it does not clearly waive a specific RLTO right the way the deposit-return timeline does.",
+      "suggested_message": "A $500 non-refundable pet fee on top of the deposit is high for Chicago. Would you consider lowering it or making it part of the refundable deposit?",
+      "late_fee_check": null,
+      "verification": {
+        "quote_match": "exact",
+        "label_adjusted": {
+          "from": "likely_unenforceable",
+          "reason": "The AI cited the security-deposit rule for this fee, but a separate, clearly labeled pet fee is not the same as the refundable security deposit that rule covers, so we lowered this from \"likely unenforceable\" to a caution instead."
+        }
+      }
+    },
+    {
+      "clause_id": "c7",
+      "quote": "Landlord and Tenant each knowingly and voluntarily waive the right to a trial by jury",
+      "quote_start": 1169,
+      "quote_end": 1254,
+      "plain_english": "You give up your right to have a jury decide any lawsuit about this lease.",
+      "label": "likely_unenforceable",
+      "rule_id": "chi-rlto-140e-jury-waiver",
+      "reasoning": "Chicago's RLTO specifically prohibits leases from making either side waive the right to a jury trial.",
+      "suggested_message": "Chicago's RLTO (§ 5-12-140(e)) says leases can't require giving up the right to a jury trial. Can Section 7 be removed?",
+      "late_fee_check": null,
+      "verification": {
+        "quote_match": "exact",
+        "label_adjusted": null
+      }
+    },
+    {
+      "clause_id": "c8",
+      "quote": "Landlord shall make repairs within a reasonable time after receiving notice.",
+      "quote_start": 1422,
+      "quote_end": 1498,
+      "plain_english": "The landlord agrees to make repairs within a reasonable time after you report a problem.",
+      "label": "standard",
+      "rule_id": null,
+      "reasoning": "This restates an ordinary, mutual repair-reporting process and does not favor either side unusually.",
+      "suggested_message": null,
+      "late_fee_check": null,
+      "verification": {
+        "quote_match": "exact",
+        "label_adjusted": null
+      }
+    }
+  ],
+  "missing": [
+    {
+      "rule_id": "chi-rlto-170-summary",
+      "title": "RLTO summary must be attached",
+      "status": "not_found",
+      "explanation": "We could not find any mention of the City's required RLTO summary being attached to this lease.",
+      "what_to_ask": "Can you attach the City of Chicago's official RLTO summary to this lease, as required by § 5-12-170?"
+    },
+    {
+      "rule_id": "chi-rlto-080a3-deposit-bank",
+      "title": "Where your security deposit is held",
+      "status": "not_found",
+      "explanation": "The lease mentions a security deposit but does not name the bank or financial institution where it will be held.",
+      "what_to_ask": "Which bank or financial institution will hold my security deposit? The RLTO requires the name and address to be in the lease."
+    }
+  ],
+  "summary": "This lease has four clauses that are likely unenforceable under Chicago's RLTO: an oversized late fee, a security-deposit return window that's too long, an any-time entry clause, and a jury-trial waiver. It also charges a large non-refundable pet fee worth questioning.",
+  "questions_to_ask": [
+    "Can the late fee in Section 3 be reduced to match Chicago's $60/month cap on this rent?",
+    "Can the security deposit return window in Section 4 be shortened to 45 days?",
+    "Can Section 5 be updated to require at least 2 days' notice before entry, except in emergencies?",
+    "Can the jury-trial waiver in Section 7 be removed?",
+    "Where will my security deposit be held, and can the City's RLTO summary be attached to this lease?"
+  ],
+  "coverage": {
+    "answers": {
+      "in_chicago": "yes",
+      "owner_occupied_six_or_fewer": "no",
+      "other_exclusion": "no"
+    },
+    "rule_pack_applies": true,
+    "uncertain": false,
+    "reason": "Based on your answers, this unit is in Chicago and doesn't fall under an RLTO exclusion, so the RLTO applies."
+  },
+  "stats": {
+    "findings_received": 8,
+    "findings_accepted": 7,
+    "quotes_rejected": 1,
+    "rule_citations_downgraded": 1,
+    "rejected": [
+      {
+        "clause_id": "c1",
+        "quote": "Marguerite Okafor",
+        "reason": "unknown_clause_id"
+      }
+    ]
+  },
+  "provider": {
+    "name": "anthropic",
+    "model": "claude-sonnet-5",
+    "is_mock": false
+  },
+  "rule_pack": {
+    "id": "chicago-rlto",
+    "name": "Chicago Residential Landlord and Tenant Ordinance (RLTO)",
+    "version": "0.1.0",
+    "date_verified": "2026-09-26",
+    "caveats": [
+      "Rule text was checked against the City of Chicago's Residential Landlord and Tenant Guide (last updated Aug 25, 2021). Later amendments may have changed wording or subsection letters; check the current Municipal Code at codelibrary.amlegal.com before relying on a citation.",
+      "These rules were extracted by an AI assistant and have not yet been reviewed by a lawyer.",
+      "The RLTO does not cover every Chicago rental (see § 5-12-020 exclusions).",
+      "A clean result does not mean a lease is fair or lawful — this pack covers only a small set of rules."
+    ]
+  },
+  "warnings": []
+}

@@ -1,0 +1,232 @@
+{
+  "lease": "trap-lease.txt",
+  "monthly_rent": 1500,
+  "clauses": [
+    {
+      "match": "entered into as of September 1, 2026, by and between Maple Row Test Properties LLC",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Parties clause; identifying info only, no substantive obligation."
+    },
+    {
+      "match": "4127 W. Foster Avenue, Unit 2, Chicago, Illinois 60630",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Premises description."
+    },
+    {
+      "match": "begin on October 1, 2026, and end on September 30, 2027",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Ordinary fixed term."
+    },
+    {
+      "match": "rent in the amount of $1,500.00 per month",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "States the monthly rent used for the late-fee cap calculation."
+    },
+    {
+      "match": "security deposit in the amount of $1,500.00 to secure Tenant's performance",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Ordinary deposit clause; the missing bank-disclosure issue is tracked separately in `missing`, not as a finding on this clause."
+    },
+    {
+      "match": "a late charge of $100.00 in addition to the rent",
+      "expected": "likely_unenforceable",
+      "rule_id": "chi-rlto-140h-late-fee",
+      "note": "$100 flat late fee exceeds the $60 cap for $1,500 rent (10 + 5% of 1000). Tests the deterministic late-fee-cap check."
+    },
+    {
+      "match": "credit Tenant a $25.00 discount against the following month's rent",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Tricky-standard: $25 early-payment discount is within the $60 cap, so it must NOT be flagged red even though it maps to the same deterministic check family as late fees."
+    },
+    {
+      "match": "used solely as a private residence for Tenant and Tenant's immediate household",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Ordinary use-of-premises restriction."
+    },
+    {
+      "match": "responsible for arranging and paying for electricity, natural gas, and internet service",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Ordinary utility allocation."
+    },
+    {
+      "match": "combined pet weight limit of 40 pounds",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Ordinary pet policy."
+    },
+    {
+      "match": "Smoking of any kind, including tobacco and cannabis products, is prohibited",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Ordinary smoking ban."
+    },
+    {
+      "match": "assigned one uncovered parking space in the rear lot",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Ordinary parking assignment."
+    },
+    {
+      "match": "deposit household refuse and recycling only in the containers designated",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Ordinary trash/recycling housekeeping rule."
+    },
+    {
+      "match": "peaceably and quietly hold and enjoy the Premises",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Standard quiet-enjoyment covenant, favors tenant."
+    },
+    {
+      "match": "maintain the Premises in compliance with applicable building and housing codes",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Standard code-compliant maintenance duty on landlord."
+    },
+    {
+      "match": "any repair to the Premises of $250.00 or less, regardless of the cause",
+      "expected": "one_sided",
+      "rule_id": null,
+      "note": "Shifts small repairs to tenant regardless of fault; one-sided but not mapped to a specific RLTO rule."
+    },
+    {
+      "match": "remain overnight in the Premises for more than three (3) nights",
+      "expected": "one_sided",
+      "rule_id": null,
+      "note": "Restrictive overnight-guest cap requiring written consent; one-sided, no specific rule."
+    },
+    {
+      "match": "administrative fee of $400.00 upon signing this Agreement",
+      "expected": "one_sided",
+      "rule_id": null,
+      "note": "Non-refundable flat fee unrelated to any deposit-return protection; one-sided, no specific rule."
+    },
+    {
+      "match": "automatically renew for a successive term of one (1) year",
+      "expected": "one_sided",
+      "rule_id": null,
+      "note": "Auto-renewal with a 90-day notice requirement to opt out; one-sided, no specific rule."
+    },
+    {
+      "match": "enter the Premises at any time and for any purpose",
+      "expected": "likely_unenforceable",
+      "rule_id": "chi-rlto-050-entry-notice",
+      "note": "Blanket no-notice entry for routine/non-emergency purposes waives the 2-day notice right (via 140a)."
+    },
+    {
+      "match": "if an emergency threatens life or property, Landlord may enter the Premises without advance notice",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Tricky-standard: emergency entry without advance notice, with after-the-fact notice within 2 days, matches the RLTO's own exception and must NOT be flagged."
+    },
+    {
+      "match": "shall not assign this Agreement or sublet all or any part",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Ordinary consent-not-unreasonably-withheld assignment clause."
+    },
+    {
+      "match": "shall not make any alterations, additions, or improvements",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Ordinary alterations clause."
+    },
+    {
+      "match": "encouraged, but not required, to obtain renter's insurance",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Non-mandatory insurance recommendation, not exculpatory."
+    },
+    {
+      "match": "even if such injury or damage is caused by the negligence of Landlord",
+      "expected": "likely_unenforceable",
+      "rule_id": "chi-rlto-140c-liability-limit",
+      "note": "Exculpatory clause limiting landlord's liability for its own negligence."
+    },
+    {
+      "match": "Landlord may pursue any remedy available under applicable law",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Neutral default/remedies clause; does not itself waive notice or authorize confession of judgment."
+    },
+    {
+      "match": "Tenant shall pay all of Landlord's reasonable attorney's fees and court costs",
+      "expected": "likely_unenforceable",
+      "rule_id": "chi-rlto-140f-attorney-fees",
+      "note": "One-sided fee-shifting (tenant pays landlord's fees in any action), not a mutual prevailing-party clause."
+    },
+    {
+      "match": "WAIVE ANY RIGHT TO A TRIAL BY JURY",
+      "expected": "likely_unenforceable",
+      "rule_id": "chi-rlto-140e-jury-waiver",
+      "note": "Jury-trial waiver, prohibited regardless of mutuality."
+    },
+    {
+      "match": "confess judgment against Tenant for all sums due",
+      "expected": "likely_unenforceable",
+      "rule_id": "chi-rlto-140b-confession",
+      "note": "Classic warrant-of-attorney / confession-of-judgment language."
+    },
+    {
+      "match": "waives any right to receive a demand for rent or a notice to quit",
+      "expected": "likely_unenforceable",
+      "rule_id": "chi-rlto-140d-notice-waiver",
+      "note": "Waives statutory/RLTO notice before an eviction action."
+    },
+    {
+      "match": "Tenant may not terminate this Agreement before the end of the Term for any reason",
+      "expected": "likely_unenforceable",
+      "rule_id": "chi-rlto-140g-unequal-termination",
+      "note": "Landlord gets 30-day out; tenant gets none -- unequal termination rights."
+    },
+    {
+      "match": "waives any and all rights, remedies, and protections available to Tenant under any municipal landlord-tenant ordinance",
+      "expected": "likely_unenforceable",
+      "rule_id": "chi-rlto-140a-waiver",
+      "note": "General waiver of RLTO rights to the fullest extent permitted."
+    },
+    {
+      "match": "deductions for normal wear and tear, carpet cleaning, and unpaid rent",
+      "expected": "likely_unenforceable",
+      "rule_id": "chi-rlto-080d-deposit-return",
+      "note": "60-day return period exceeds the 45-day cap, plus improper deductions for normal wear and tear/carpet cleaning."
+    },
+    {
+      "match": "delivered personally or by first-class mail to Landlord",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Ordinary notices clause."
+    },
+    {
+      "match": "held invalid or unenforceable, the remaining provisions",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Ordinary severability clause."
+    },
+    {
+      "match": "supersedes all prior negotiations, representations, or agreements",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Ordinary entire-agreement/merger clause."
+    },
+    {
+      "match": "IN WITNESS WHEREOF, the Parties have executed this Agreement",
+      "expected": "standard",
+      "rule_id": null,
+      "note": "Signature block."
+    }
+  ],
+  "missing": [
+    { "rule_id": "chi-rlto-170-summary", "expected_status": "not_found" },
+    { "rule_id": "chi-rlto-080a3-deposit-bank", "expected_status": "not_found" }
+  ]
+}
