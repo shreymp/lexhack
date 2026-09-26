@@ -15,24 +15,15 @@ const SOURCE =
   "Tenant shall keep the unit clean and free of garbage at all times.";
 
 function makeClauses(): Clause[] {
-  const headings = ["1. RENT", "2. LATE CHARGES", "3. WAIVER", "4. LIABILITY", "5. STANDARD"];
-  const clauses: Clause[] = [];
-  let cursor = 0;
-  const parts = SOURCE.split(/\n\n(?=\d\. )/);
-  // Rebuild with accurate offsets by scanning the source directly.
-  let idx = 0;
   const labels = ["1.", "2.", "3.", "4.", "5."];
   const starts = labels.map((l) => SOURCE.indexOf(`${l} `));
+  const clauses: Clause[] = [];
   for (let i = 0; i < starts.length; i++) {
     const start = starts[i];
     const end = i + 1 < starts.length ? starts[i + 1] : SOURCE.length;
     const text = SOURCE.slice(start, end).replace(/\s+$/, "");
     clauses.push({ id: `c${i + 1}`, index: i, heading: labels[i], text, start, end: start + text.length });
   }
-  void cursor;
-  void parts;
-  void idx;
-  void headings;
   return clauses;
 }
 
@@ -49,10 +40,10 @@ function findingFor(
   clauseId: string,
   overrides: Record<string, unknown> = {},
 ): Record<string, unknown> {
-  const clause = CLAUSES.find((c) => c.id === clauseId)!;
+  const clause = CLAUSES.find((c) => c.id === clauseId);
   return {
     clause_id: clauseId,
-    quote: clause.text,
+    quote: clause ? clause.text : "irrelevant quote for a nonexistent clause id",
     plain_english: "This clause does something.",
     label: "standard",
     rule_id: null,
@@ -239,6 +230,41 @@ describe("verifyFindings", () => {
     expect(stats.findings_received).toBe(3);
     expect(stats.findings_accepted).toBe(1);
     expect(stats.rejected.length).toBe(2);
+  });
+});
+
+describe("verifyFindings (lead-review regressions)", () => {
+  it("re-attaches a finding to the clause that actually contains its quote", () => {
+    const quote = "even if caused by Landlord's own negligence";
+    const { findings } = verifyFindings(
+      [findingFor("c1", { quote, label: "likely_unenforceable", rule_id: "chi-rlto-140c-liability-limit", suggested_message: "x" })],
+      baseCtx,
+    );
+    expect(findings).toHaveLength(1);
+    expect(findings[0].clause_id).toBe("c4");
+    const c4 = CLAUSES[3];
+    expect(findings[0].quote_start).toBeGreaterThanOrEqual(c4.start);
+    expect(findings[0].quote_end).toBeLessThanOrEqual(c4.end);
+  });
+
+  it("treats a re-attached finding as a duplicate if that clause already has one", () => {
+    const { findings, stats } = verifyFindings(
+      [findingFor("c4"), findingFor("c1", { quote: "even if caused by Landlord's own negligence" })],
+      baseCtx,
+    );
+    expect(findings.map((f) => f.clause_id)).toEqual(["c4"]);
+    expect(stats.rejected[0].reason).toBe("duplicate");
+  });
+
+  it("abstains when the late-fee rule is cited without extracted numbers", () => {
+    const { findings, stats } = verifyFindings(
+      [findingFor("c2", { label: "likely_unenforceable", rule_id: "chi-rlto-140h-late-fee", suggested_message: "x", late_fee: null })],
+      { ...baseCtx, rent: { amount: 1500, source: "user" } },
+    );
+    expect(findings[0].label).toBe("one_sided");
+    expect(findings[0].rule_id).toBeNull();
+    expect(findings[0].verification.label_adjusted?.from).toBe("likely_unenforceable");
+    expect(stats.rule_citations_downgraded).toBe(1);
   });
 });
 

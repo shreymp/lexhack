@@ -28,7 +28,8 @@ export interface ClauseRow {
   clause_id: string | null; // null if the match couldn't be located in any clause
   got_label: RiskLabel | "unanalyzed" | "unmatched";
   got_rule_id: string | null;
-  rule_ok: boolean; // true when label matches AND (not likely_unenforceable OR rule_id matches)
+  /** "n/a" when the clause has no finding at all -- there's no label/rule to judge. */
+  rule_ok: boolean | "n/a";
   category:
     | "red_caught_exact"
     | "red_caught_other_rule"
@@ -39,6 +40,7 @@ export interface ClauseRow {
     | "standard_false_alarm_red"
     | "standard_false_alarm_yellow"
     | "standard_ok"
+    | "standard_unanalyzed"
     | "unmatched";
 }
 
@@ -54,6 +56,8 @@ export interface EvalReport {
   yellow_missed: number;
 
   standard_total: number;
+  standard_correct: number; // has a finding AND that finding's label is "standard"
+  standard_unanalyzed: number; // expected standard, but the clause has no finding at all -- NOT counted as correct or as a false alarm
   false_alarms_red: number; // standard clause flagged likely_unenforceable
   false_alarms_yellow: number; // standard clause flagged one_sided
 
@@ -97,6 +101,8 @@ export function scoreResult(result: AnalysisResult, labels: Labels): EvalReport 
   let yellow_caught = 0;
   let yellow_missed = 0;
   let standard_total = 0;
+  let standard_correct = 0;
+  let standard_unanalyzed = 0;
   let false_alarms_red = 0;
   let false_alarms_yellow = 0;
   let unmatched_labels = 0;
@@ -121,13 +127,18 @@ export function scoreResult(result: AnalysisResult, labels: Labels): EvalReport 
     const finding = findingByClauseId.get(clause.id);
     const gotLabel: RiskLabel | "unanalyzed" = finding ? finding.label : "unanalyzed";
     const gotRuleId = finding?.rule_id ?? null;
+    const hasFinding = finding !== undefined;
 
     let category: ClauseRow["category"];
-    let ruleOk = false;
+    let ruleOk: boolean | "n/a" = false;
 
     if (label.expected === "likely_unenforceable") {
       red_planted++;
-      if (gotLabel === "likely_unenforceable" && gotRuleId === label.rule_id) {
+      if (!hasFinding) {
+        red_missed++;
+        category = "red_missed";
+        ruleOk = "n/a";
+      } else if (gotLabel === "likely_unenforceable" && gotRuleId === label.rule_id) {
         red_caught_exact++;
         category = "red_caught_exact";
         ruleOk = true;
@@ -143,7 +154,11 @@ export function scoreResult(result: AnalysisResult, labels: Labels): EvalReport 
       }
     } else if (label.expected === "one_sided") {
       yellow_planted++;
-      if (gotLabel === "likely_unenforceable" || gotLabel === "one_sided") {
+      if (!hasFinding) {
+        yellow_missed++;
+        category = "yellow_missed";
+        ruleOk = "n/a";
+      } else if (gotLabel === "likely_unenforceable" || gotLabel === "one_sided") {
         yellow_caught++;
         category = "yellow_caught";
         ruleOk = true;
@@ -154,13 +169,18 @@ export function scoreResult(result: AnalysisResult, labels: Labels): EvalReport 
     } else {
       // expected === "standard"
       standard_total++;
-      if (gotLabel === "likely_unenforceable") {
+      if (!hasFinding) {
+        standard_unanalyzed++;
+        category = "standard_unanalyzed";
+        ruleOk = "n/a";
+      } else if (gotLabel === "likely_unenforceable") {
         false_alarms_red++;
         category = "standard_false_alarm_red";
       } else if (gotLabel === "one_sided") {
         false_alarms_yellow++;
         category = "standard_false_alarm_yellow";
       } else {
+        standard_correct++;
         category = "standard_ok";
         ruleOk = true;
       }
@@ -201,6 +221,8 @@ export function scoreResult(result: AnalysisResult, labels: Labels): EvalReport 
     yellow_caught,
     yellow_missed,
     standard_total,
+    standard_correct,
+    standard_unanalyzed,
     false_alarms_red,
     false_alarms_yellow,
     missing_expected,
@@ -227,7 +249,8 @@ export function renderRowsTable(rows: ClauseRow[]): string {
     const excerpt = r.match.length > 50 ? r.match.slice(0, 47) + "..." : r.match;
     const expected = r.expected_rule_id ? `${r.expected}(${r.expected_rule_id})` : r.expected;
     const got = r.got_rule_id ? `${r.got_label}(${r.got_rule_id})` : r.got_label;
-    lines.push([excerpt, expected, got, r.rule_ok ? "yes" : "no", r.category].join(" | "));
+    const ruleOkStr = r.rule_ok === "n/a" ? "n/a" : r.rule_ok ? "yes" : "no";
+    lines.push([excerpt, expected, got, ruleOkStr, r.category].join(" | "));
   }
   return lines.join("\n");
 }

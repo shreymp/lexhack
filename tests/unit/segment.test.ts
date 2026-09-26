@@ -126,3 +126,17 @@ This is the third paragraph about termination and notice requirements here.
     expect(clauses.some((c) => c.text.trim() === "")).toBe(false);
   });
 });
+
+describe("segmentClauses (lead-review regressions)", () => {
+  it("does not treat a wrapped ALL-CAPS line inside a paragraph as a heading", () => {
+    const text =
+      "1. JURY. LANDLORD AND TENANT WAIVE ANY RIGHT TO A TRIAL BY JURY IN ANY\nPROCEEDING ARISING OUT OF THIS AGREEMENT.\n\n2. NOTICES. Notices go to the addresses above.";
+    const clauses = segmentClauses(text);
+    expect(clauses.map((c) => c.heading)).toEqual(["1.", "2."]);
+  });
+
+  it("still detects a standalone ALL-CAPS title after a blank line", () => {
+    const text = "Intro paragraph here.\n\nLATE CHARGES\nRent paid after the 5th incurs a fee.";
+    expect(segmentClauses(text).map((c) => c.heading)).toContain("LATE CHARGES");
+  });
+});

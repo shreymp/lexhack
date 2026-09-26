@@ -56,6 +56,8 @@ const NUMERIC_FIELDS = [
   "yellow_caught",
   "yellow_missed",
   "standard_total",
+  "standard_correct",
+  "standard_unanalyzed",
   "false_alarms_red",
   "false_alarms_yellow",
   "missing_expected",
@@ -146,7 +148,8 @@ function printSingleReport(r: EvalReport) {
   console.log(`RED   planted=${r.red_planted}  exact=${r.red_caught_exact}  other_rule=${r.red_caught_other_rule}  ` +
     `flagged_yellow_only=${r.red_flagged_yellow_only}  missed=${r.red_missed}`);
   console.log(`YELLOW planted=${r.yellow_planted}  caught=${r.yellow_caught}  missed=${r.yellow_missed}`);
-  console.log(`STANDARD total=${r.standard_total}  false_alarms_red=${r.false_alarms_red}  false_alarms_yellow=${r.false_alarms_yellow}`);
+  console.log(`STANDARD total=${r.standard_total}  correct=${r.standard_correct}  unanalyzed=${r.standard_unanalyzed}  ` +
+    `false_alarms_red=${r.false_alarms_red}  false_alarms_yellow=${r.false_alarms_yellow}`);
   console.log(`MISSING expected=${r.missing_expected}  correct=${r.missing_correct}`);
   for (const m of r.missing_rows) {
     console.log(`  - ${m.rule_id}: expected=${m.expected_status} got=${m.got_status ?? "(absent from result.missing)"} ${m.correct ? "OK" : "WRONG"}`);

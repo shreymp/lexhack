@@ -88,16 +88,20 @@ function findHeadings(text: string): HeadingMatch[] {
   const lines = splitLines(text);
   const headings: HeadingMatch[] = [];
   let prevWasNumbered = false;
+  let prevWasBlank = true; // start of document counts as a paragraph break
 
   for (const line of lines) {
     const numberedLabel = detectNumberedHeading(line.text);
     if (numberedLabel) {
       headings.push({ start: line.start, label: numberedLabel });
       prevWasNumbered = true;
+      prevWasBlank = false;
       continue;
     }
 
     const trimmed = line.text.trim();
+    const wasBlank = prevWasBlank;
+    prevWasBlank = trimmed === "";
     if (trimmed && isAllCapsTitle(trimmed)) {
       if (prevWasNumbered) {
         // This all-caps line is the title of the heading we just matched on
@@ -106,7 +110,10 @@ function findHeadings(text: string): HeadingMatch[] {
         prevWasNumbered = false;
         continue;
       }
-      headings.push({ start: line.start, label: trimmed });
+      // A standalone title must start a new paragraph. An all-caps line in the
+      // middle of a paragraph is usually a wrapped line of an all-caps sentence
+      // (e.g. a jury waiver in a PDF), not a heading.
+      if (wasBlank) headings.push({ start: line.start, label: trimmed });
     }
     prevWasNumbered = false;
   }

@@ -154,30 +154,43 @@ export function verifyFindings(
     const parsed = parsedResult.data;
 
     // b. clause must exist, and only the first finding per clause is kept
-    const clause = clauseById.get(parsed.clause_id);
-    if (!clause) {
+    const claimedClause = clauseById.get(parsed.clause_id);
+    if (!claimedClause) {
       rejected.push({ clause_id: parsed.clause_id, quote: parsed.quote, reason: "unknown_clause_id" });
       continue;
     }
-    if (claimedClauseIds.has(parsed.clause_id)) {
-      rejected.push({ clause_id: parsed.clause_id, quote: parsed.quote, reason: "duplicate" });
-      continue;
-    }
-    claimedClauseIds.add(parsed.clause_id);
 
     // c. quote must be locatable verbatim (or whitespace/punctuation-tolerant)
     const trimmedQuote = parsed.quote.trim();
-    const isEntireClause = trimmedQuote === clause.text.trim();
+    const isEntireClause = trimmedQuote === claimedClause.text.trim();
     // Short quotes are too easy to anchor to the wrong spot by accident (a
     // stray "rent." could "match" all over the lease), so unless the model
     // quoted the whole (short) clause, we require at least MIN_QUOTE_CHARS.
     const tooShort = trimmedQuote.length < MIN_QUOTE_CHARS && !isEntireClause;
 
-    const location = tooShort ? null : locateQuote(parsed.quote, clause, ctx.sourceText);
+    const location = tooShort ? null : locateQuote(parsed.quote, claimedClause, ctx.sourceText);
     if (!location) {
       rejected.push({ clause_id: parsed.clause_id, quote: parsed.quote, reason: "quote_not_found" });
       continue;
     }
+
+    // If the quote was only found elsewhere in the document, the model mis-assigned
+    // the clause. Attach the finding to the clause that actually contains the quote,
+    // so the highlight and the sidebar entry always point at the same text.
+    const clause =
+      location.quote_start >= claimedClause.start && location.quote_end <= claimedClause.end
+        ? claimedClause
+        : ctx.clauses.find((c) => location.quote_start >= c.start && location.quote_end <= c.end);
+    if (!clause) {
+      // Quote spans a clause boundary -- can't anchor it to one clause.
+      rejected.push({ clause_id: parsed.clause_id, quote: parsed.quote, reason: "quote_not_found" });
+      continue;
+    }
+    if (claimedClauseIds.has(clause.id)) {
+      rejected.push({ clause_id: clause.id, quote: parsed.quote, reason: "duplicate" });
+      continue;
+    }
+    claimedClauseIds.add(clause.id);
 
     // d. rule check for likely_unenforceable
     let label: RiskLabel = parsed.label;
@@ -209,8 +222,18 @@ export function verifyFindings(
 
     // e. deterministic late-fee/early-discount cap check
     let lateFeeCheck: LateFeeCheck | null = null;
-    const triggersLateFeeCheck = LATE_FEE_RULE_IDS.has(ruleId ?? "") || parsed.late_fee != null;
-    if (triggersLateFeeCheck && parsed.late_fee != null) {
+    if (parsed.late_fee == null && ruleId != null && LATE_FEE_RULE_IDS.has(ruleId)) {
+      // The cap is decided by code, not the model. Without extracted numbers we
+      // can't run the check, so we abstain from the citation.
+      labelAdjusted = {
+        from: label,
+        reason: "We couldn't read the fee amount from this clause, so we can't check it against the cap.",
+      };
+      label = "one_sided";
+      ruleId = null;
+      citationDowngraded = true;
+    }
+    if (parsed.late_fee != null) {
       lateFeeCheck = checkLateFee(parsed.late_fee, ctx.rent);
 
       if (lateFeeCheck.over_cap === true && ctx.rulePackApplies) {
@@ -250,7 +273,7 @@ export function verifyFindings(
     if (labelAdjusted) labelAdjusted = { ...labelAdjusted, reason: sanitizeText(labelAdjusted.reason) };
 
     accepted.push({
-      clause_id: parsed.clause_id,
+      clause_id: clause.id,
       quote: ctx.sourceText.slice(location.quote_start, location.quote_end),
       quote_start: location.quote_start,
       quote_end: location.quote_end,

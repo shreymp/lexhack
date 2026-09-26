@@ -24,7 +24,7 @@ export function evaluateCoverage(answers: CoverageAnswers): Coverage {
 }
 
 function buildReason(answers: CoverageAnswers, applies: boolean, uncertain: boolean): string {
-  const { in_chicago, owner_occupied_six_or_fewer, other_exclusion } = answers;
+  const { in_chicago, owner_occupied_six_or_fewer } = answers;
 
   if (!applies) {
     if (in_chicago === "no") {
